@@ -1,32 +1,25 @@
 'use client';
 
-import { useState } from "react";
-import FilterPills from "../components/FilterPills";
 import ProjectList from "../components/ProjectList";
 
 const ProjectsPage = () => {
-    const [activeFilter, setActiveFilter] = useState("Professional");
-  
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-24">
-        <div className="mb-4">
-          <h1 className="text-3xl lg:text-4xl font-bold text-primaryBlue mb-4">
-            Explore My Projects
+  return (
+    <div className="min-h-screen bg-backgroundLight py-24">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl lg:text-6xl font-bold text-primaryBlue mb-6">
+            My Projects
           </h1>
-          <p className="text-gray-600 max-w-2xl">
-            A collection of professional and personal projects showcasing my skills 
-            and passion for creating innovative solutions.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            A showcase of my work across web development, mobile applications, and full-stack solutions. 
+            Each project represents a unique challenge and innovative approach to problem-solving.
           </p>
         </div>
         
-        <FilterPills 
-          activeFilter={activeFilter} 
-          setActiveFilter={setActiveFilter} 
-        />
-        
-        <ProjectList activeFilter={activeFilter} />
+        <ProjectList />
       </div>
-    );
+    </div>
+  );
 };
 
-export default ProjectsPage; 
+export default ProjectsPage;

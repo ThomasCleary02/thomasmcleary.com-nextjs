@@ -8,14 +8,16 @@ export default function Hero() {
         {/* Left Content */}
         <div className="lg:w-2/3 text-center lg:text-left w-full">
           <h1 className="text-4xl lg:text-5xl font-bold text-primaryBlue mb-4">
-            Hey, I&apos;m Thomas!
+            Hey, I'm Thomas!
           </h1>
-          <p className="text-lg lg:text-xl text-darkGray">
-            A full-stack{' '}
-            <span className="text-primaryBlue font-semibold">developer</span>{' '}
-            crafting dynamic, responsive, and{' '}
-            <span className="text-primaryBlue font-semibold">user-focused</span>{' '}
-            web applications.
+          <p className="text-lg lg:text-xl text-darkGray mb-6">
+            A <span className="text-primaryBlue font-semibold">software engineer</span> passionate about 
+            building innovative solutions across the full technology stack. I specialize in creating 
+            <span className="text-primaryBlue font-semibold"> user-focused</span> applications that solve real-world problems.
+          </p>
+          <p className="text-base text-gray-600 mb-6">
+            From web development to mobile apps, from frontend interfaces to backend systems, 
+            I bring a comprehensive understanding of modern software architecture and development practices.
           </p>
           <div className="mt-6 flex justify-center lg:justify-start">
             <RouteButton 

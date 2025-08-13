@@ -1,12 +1,7 @@
 import Link from 'next/link';
 
 export default function AboutMeSection() {
-  // Temporary static data until database is set up
-  const featuredProjects: any[] = []; // Empty for now
-  const allProjects: any[] = [];
-
   return (
-    // Add relative positioning and increased z-index to lift above hero
     <section className="relative bg-lightBlue/75 min-h-screen flex items-center justify-center px-10 z-10">
       {/* Add top shadow to create depth effect */}
       <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-t from-transparent to-black/15"></div>
@@ -27,14 +22,22 @@ export default function AboutMeSection() {
           <h1 className="text-4xl lg:text-5xl font-bold text-backgroundLight mb-6 text-shadow">
             About Me
           </h1>
+          <p className="text-lg lg:text-xl text-white leading-relaxed text-shadow mb-6">
+            I'm Thomas Cleary, a software engineer with a strong foundation in computer science and 
+            a passion for building innovative solutions. I hold a Bachelor of Science in Computer & Information Technology 
+            from Shepherd University, where I developed expertise in software engineering, networking, database management, 
+            and systems security.
+          </p>
+          <p className="text-lg lg:text-xl text-white leading-relaxed text-shadow mb-6">
+            My technical skills span the full development spectrum - from frontend frameworks and responsive design 
+            to backend architecture, database systems, and cloud infrastructure. I'm comfortable working with 
+            multiple programming languages, frameworks, and tools, allowing me to adapt quickly to new technologies 
+            and project requirements.
+          </p>
           <p className="text-lg lg:text-xl text-white leading-relaxed text-shadow">
-            I&apos;m Thomas Cleary, a student at Shepherd University studying
-            Computer and Information Technology. I&apos;m passionate about web
-            development and proficient in HTML, CSS, JavaScript, and Python. I
-            have experience with both relational and nonrelational databases,
-            including MongoDB and MySQL. I&apos;m familiar with tools like Figma, VS
-            Code, and Postman, and have some exposure to Amazon Web Services.
-            Let&apos;s collaborate and bring ideas to life with React and Django!
+            Beyond technical skills, I bring strong problem-solving abilities, effective communication, 
+            and a collaborative mindset to every project. I thrive in agile environments and enjoy working 
+            with teams to deliver high-quality software solutions.
           </p>
         </div>
       </div>

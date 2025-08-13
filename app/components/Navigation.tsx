@@ -74,29 +74,11 @@ export default function Navigation() {
               <Link 
                 href="/projects" 
                 className={`block px-4 py-2 hover:bg-gray-100 transition-colors duration-200 ${
-                  isActive('/projects') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
+                  isActive('/') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
                 }`}
                 onClick={() => setIsOpen(false)}
               >
                 Projects
-              </Link>
-              <Link 
-                href="/blog" 
-                className={`block px-4 py-2 hover:bg-gray-100 transition-colors duration-200 ${
-                  isActive('/blog') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                Blog Posts
-              </Link>
-              <Link 
-                href="/resume" 
-                className={`block px-4 py-2 hover:bg-gray-100 transition-colors duration-200 ${
-                  isActive('/resume') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                Resume
               </Link>
             </div>
           </div>
