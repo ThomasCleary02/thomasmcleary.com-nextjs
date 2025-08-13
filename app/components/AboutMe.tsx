@@ -22,15 +22,15 @@ export default function AboutMeSection() {
           <h1 className="text-4xl lg:text-5xl font-bold text-backgroundLight mb-6 text-shadow">
             About Me
           </h1>
-          <p className="text-lg lg:text-xl text-white leading-relaxed text-shadow mb-6">
-            I'm Thomas Cleary, a software engineer with a strong foundation in computer science and 
+          <p className="text-lg lg:text-xl text-white leading-relaxed text-shadow">
+            I&apos;m Thomas Cleary, a software engineer with a strong foundation in computer science and 
             a passion for building innovative solutions. I hold a Bachelor of Science in Computer & Information Technology 
             from Shepherd University, where I developed expertise in software engineering, networking, database management, 
             and systems security.
           </p>
           <p className="text-lg lg:text-xl text-white leading-relaxed text-shadow mb-6">
             My technical skills span the full development spectrum - from frontend frameworks and responsive design 
-            to backend architecture, database systems, and cloud infrastructure. I'm comfortable working with 
+            to backend architecture, database systems, and cloud infrastructure. I&apos;m comfortable working with 
             multiple programming languages, frameworks, and tools, allowing me to adapt quickly to new technologies 
             and project requirements.
           </p>
