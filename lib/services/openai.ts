@@ -24,8 +24,6 @@ export class OpenAIService {
     weather: WeatherData, 
     timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night'
   ): Promise<GreetingResponse> {
-    const context: GreetingContext = { city, region, country, weather, timeOfDay };
-    // Add randomness to cache key for more variety
     const cacheKey = `greeting_${city}_${weather.condition}_${timeOfDay}_${Math.floor(Date.now() / (30 * 60 * 1000))}`;
     
     // Check cache first
@@ -104,11 +102,11 @@ export class OpenAIService {
   private generateFallbackGreeting(
     weather: WeatherData, 
     timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night',
-    city: string  // Add city parameter
+    city: string
   ): GreetingResponse {
     let greeting = '';
     let emoji = '';
-    let tone: 'friendly' | 'professional' | 'casual' = 'friendly';
+    const tone: 'friendly' | 'professional' | 'casual' = 'friendly';
 
     // Weather-based greetings with more personality
     if (weather.condition.toLowerCase().includes('rain')) {

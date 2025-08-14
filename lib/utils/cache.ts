@@ -1,6 +1,6 @@
 export class CacheManager {
     private static instance: CacheManager;
-    private cache = new Map<string, any>();
+    private cache = new Map<string, { value: unknown; expiresAt: number }>();
 
     static getInstance(): CacheManager {
         if (!CacheManager.instance) {
@@ -9,7 +9,7 @@ export class CacheManager {
         return CacheManager.instance;
     }
 
-    set(key: string, value: any, ttl: number): void {
+    set(key: string, value: unknown, ttl: number): void {
         const expiresAt = Date.now() + ttl;
         this.cache.set(key, {
             value,
@@ -17,7 +17,7 @@ export class CacheManager {
         });
     }
 
-    get(key: string): any | null {
+    get(key: string): unknown | null {
         const item = this.cache.get(key);
         if (!item) return null;
 

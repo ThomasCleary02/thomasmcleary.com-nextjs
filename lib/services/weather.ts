@@ -1,4 +1,4 @@
-import { WeatherData, CachedWeatherData } from "../types/weather";
+import { WeatherData } from "../types/weather";
 import { LocationData } from "../types/location";
 import { CacheManager } from "../utils/cache";
 import { validateCoordinates } from "../utils/validation";

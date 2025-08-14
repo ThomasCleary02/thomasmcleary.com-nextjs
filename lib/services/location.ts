@@ -1,4 +1,4 @@
-import { LocationData, CachedLocationData } from "../types/location";
+import { LocationData } from "../types/location";
 import { CacheManager } from "../utils/cache";
 
 const CACHE_TTL = 1000 * 60 * 60; // 1 hour
