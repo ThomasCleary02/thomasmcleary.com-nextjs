@@ -94,6 +94,29 @@ export class LocationService {
         }
       }
 
+      // 3) Third fallback: ipinfo.io (most generous)
+      if (!locationData) {
+        try {
+          const res = await this.fetchWithTimeout(`https://ipinfo.io/${clientIP}/json`, FETCH_TIMEOUT_MS);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.loc) {
+              const [lat, long] = data.loc.split(',').map(Number);
+              locationData = {
+                city: data.city || "Unknown City",
+                region: data.region || "Unknown Region",
+                country: data.country || "Unknown Country",
+                countryCode: data.countryCode || "XX",
+                lat, long,
+                timezone: data.timezone || "UTC",
+              };
+            }
+          }
+        } catch (err) {
+          this.warnOnce(`ipinfo-ex:${clientIP}`, `ipinfo.io failed for ${clientIP}`);
+        }
+      }
+
       if (!locationData) {
         this.warnOnce(`all-failed:${clientIP}`, `All location services failed for ${clientIP}; using default`);
         locationData = this.getDefaultLocation();
