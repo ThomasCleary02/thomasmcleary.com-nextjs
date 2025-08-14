@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export function useScrollAnimation() {
+export function useScrollAnimation(): { ref: React.RefObject<HTMLDivElement | null>; isVisible: boolean } {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      ([entry]): void => {
         if (entry.isIntersecting) {
           setIsVisible(true);
         }
@@ -23,7 +23,7 @@ export function useScrollAnimation() {
       observer.observe(ref.current);
     }
 
-    return () => {
+    return (): void => {
       if (ref.current) {
         observer.unobserve(ref.current);
       }

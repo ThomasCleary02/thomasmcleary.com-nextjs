@@ -215,13 +215,13 @@ export class LocationService {
     }
   }
 
-  private logOnce(key: string, msg: string) {
+  private logOnce(key: string, msg: string): void {
     if (this.loggedOnce.has(key)) return;
     this.loggedOnce.add(key);
     console.log(msg);
   }
 
-  private warnOnce(key: string, msg: string) {
+  private warnOnce(key: string, msg: string): void {
     if (this.loggedOnce.has(key)) return;
     this.loggedOnce.add(key);
     console.warn(msg);

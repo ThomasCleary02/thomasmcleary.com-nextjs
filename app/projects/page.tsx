@@ -2,7 +2,7 @@
 
 import ProjectList from "../components/projects-page/ProjectList";
 
-const ProjectsPage = () => {
+const ProjectsPage = (): React.JSX.Element => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 py-24">
       <div className="max-w-7xl mx-auto px-4">

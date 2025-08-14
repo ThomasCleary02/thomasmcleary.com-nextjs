@@ -33,7 +33,7 @@ export default function AboutSkills(): React.JSX.Element {
           Technical Expertise
         </h2>
         <div className="grid md:grid-cols-3 gap-8">
-          {skillCategories.map((category, index) => {
+          {skillCategories.map((category, index): React.JSX.Element => {
             const IconComponent = category.icon;
             return (
               <motion.div 
@@ -51,7 +51,7 @@ export default function AboutSkills(): React.JSX.Element {
                   {category.title}
                 </h3>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {category.skills.map((skill) => (
+                  {category.skills.map((skill): React.JSX.Element => (
                     <span key={skill} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
                       {skill}
                     </span>

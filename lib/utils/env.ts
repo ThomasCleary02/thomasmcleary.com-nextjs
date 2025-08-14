@@ -1,4 +1,4 @@
-export function validateEnvironment() {
+export function validateEnvironment(): void {
   const requiredEnvVars = [
     'OPENWEATHER_API_KEY',
     'OPENAI_API_KEY',
