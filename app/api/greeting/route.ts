@@ -11,23 +11,29 @@ export async function GET(request: NextRequest) {
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
     
+    // Get IP headers once at the top
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = forwarded?.split(',')[0]?.trim();
+    
     let location: LocationData | null = null;
     
     if (lat && lng) {
-      // Use precise coordinates from browser geolocation
+      // GPS coordinates provided - use for weather accuracy
+      // Get city/region names from IP geolocation
+      const locationFromIP = await locationService.getLocationByIp(ip);
+      
+      // Combine GPS coordinates with IP-based city info
       location = {
-        city: "Unknown", // We'll get this from reverse geocoding
-        region: "Unknown",
-        country: "Unknown",
-        countryCode: "XX",
+        city: locationFromIP?.city || 'Unknown',
+        region: locationFromIP?.region || 'Unknown',
+        country: locationFromIP?.country || 'Unknown',
+        countryCode: locationFromIP?.countryCode || 'XX',
         lat: parseFloat(lat),
         long: parseFloat(lng),
-        timezone: "UTC", // We'll get this from the coordinates
+        timezone: locationFromIP?.timezone || 'UTC',
       };
     } else {
-      // Fallback to IP-based location
-      const forwarded = request.headers.get('x-forwarded-for');
-      const ip = forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip');
+      // No GPS - fallback to IP-based location for both weather and city
       location = await locationService.getLocationByIp(ip || undefined);
     }
     
@@ -39,7 +45,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Get weather data
+    // Get weather data using the coordinates (GPS if available, IP-based if not)
     const weather = await weatherService.getWeatherByLocation(location);
     
     // Handle case where weather service returns null
@@ -63,18 +69,19 @@ export async function GET(request: NextRequest) {
     else if (hour >= 17 && hour < 21) timeOfDay = 'evening';
     else timeOfDay = 'night';
 
-    // Generate personalized greeting
+    // Generate personalized greeting with accurate weather + proper city names
     const greetingResponse = await openAIService.generateGreeting(
       location.city,
       location.region,
       location.country,
-      weather || { temperature: 20, condition: 'clear', feelsLike: 20, conditionCode: 800, humidity: 50, windSpeed: 5, timestamp: Date.now() },
+      weather,
       timeOfDay
     );
 
     return NextResponse.json(greetingResponse);
   } catch (error) {
-    console.error('Error generating greeting:', error);
+    // Remove console.error for production
+    // console.error('Error generating greeting:', error);
     
     // Fallback greeting
     return NextResponse.json({
