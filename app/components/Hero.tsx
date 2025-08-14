@@ -59,8 +59,8 @@ export default function Hero() {
 
         {/* Right Image with Greeting */}
         <div className="lg:w-1/3 flex flex-col items-center lg:items-end w-full order-1 lg:order-2 mb-8 lg:mb-0">
-          {/* Greeting Bubble - Add top margin for mobile */}
-          <div className="relative mb-4 mt-16 sm:mt-8 lg:mt-0">
+          {/* Greeting Bubble - Increase top margin for mobile */}
+          <div className="relative mb-4 mt-20 sm:mt-16 lg:mt-0">
             <div className="bg-white rounded-2xl px-4 py-3 shadow-lg border border-gray-100 max-w-xs text-center">
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
