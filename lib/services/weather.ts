@@ -53,9 +53,6 @@ export class WeatherService {
                 try {
                     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.long}&appid=${OPENWEATHER_API_KEY}&units=imperial`;
                     
-                    console.log('Weather API URL:', currentWeatherUrl.replace(OPENWEATHER_API_KEY, '***HIDDEN***'));
-                    console.log('Location data:', { lat: location.lat, long: location.long });
-
                     const response = await fetch(currentWeatherUrl);
                     if (!response.ok) {
                         const errorText = await response.text();

@@ -33,7 +33,6 @@ export class OpenAIService {
     }
 
     try {
-      console.log(`Generating greeting for ${city}, ${weather.condition}, ${timeOfDay}`);
       
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
@@ -75,17 +74,24 @@ export class OpenAIService {
         throw new Error('No response from OpenAI');
       }
 
-      const parsedResponse = JSON.parse(content);
+      let parsedResponse;
+      try {
+        parsedResponse = JSON.parse(content);
+      } catch (parseError) {
+        console.error('Failed to parse OpenAI response:', content);
+        throw new Error('Invalid JSON response from OpenAI');
+      }
       
-      // Validate the response structure
-      if (!parsedResponse.greeting || !parsedResponse.emoji || !parsedResponse.tone) {
-        throw new Error('Invalid response structure from OpenAI');
+      // More flexible validation - check if we have at least a greeting
+      if (!parsedResponse.greeting) {
+        console.error('OpenAI response missing greeting:', parsedResponse);
+        throw new Error('Missing greeting in OpenAI response');
       }
       
       const response: GreetingResponse = {
         greeting: parsedResponse.greeting,
-        emoji: parsedResponse.emoji,
-        tone: parsedResponse.tone,
+        emoji: parsedResponse.emoji || '👋', // Default emoji if missing
+        tone: parsedResponse.tone || 'friendly', // Default tone if missing
         timestamp: Date.now()
       };
 
@@ -109,18 +115,18 @@ export class OpenAIService {
     let emoji = '';
     const tone: 'friendly' | 'professional' | 'casual' = 'friendly';
 
-    // Weather-based greetings with more personality
+    // Weather-based greetings with more personality - ALL in °F now
     if (weather.condition.toLowerCase().includes('rain')) {
       greeting = `Rainy ${timeOfDay} in ${city}! Perfect weather for cozy coding ☔`;
       emoji = '☔';
-    } else if (weather.condition.toLowerCase().includes('sun') || weather.temperature > 25) {
-      greeting = `Sunny ${timeOfDay}! ${weather.temperature}°C of perfect weather in ${city} ☀️`;
+    } else if (weather.condition.toLowerCase().includes('sun') || weather.temperature > 75) { // 75°F = ~24°C
+      greeting = `Sunny ${timeOfDay}! ${weather.temperature}°F of perfect weather in ${city} ☀️`;
       emoji = '☀️';
-    } else if (weather.temperature < 10) {
-      greeting = `Chilly ${timeOfDay} in ${city}! ${weather.temperature}°C calls for hot coffee 🧥`;
+    } else if (weather.temperature < 50) { // 50°F = ~10°C
+      greeting = `Chilly ${timeOfDay} in ${city}! ${weather.temperature}°F calls for hot coffee 🧥`;
       emoji = '🧥';
     } else {
-      greeting = `Lovely ${timeOfDay}! ${weather.temperature}°C and ${weather.condition} in ${city} 👋`;
+      greeting = `Lovely ${timeOfDay}! ${weather.temperature}°F and ${weather.condition} in ${city} 👋`;
       emoji = '👋';
     }
 
@@ -141,7 +147,7 @@ export class OpenAIService {
     try {
       let weatherContext = '';
       if (weather) {
-        weatherContext = ` Current weather: ${weather.condition}, ${weather.temperature}°C.`;
+        weatherContext = ` Current weather: ${weather.condition}, ${weather.temperature}°F.`;
       }
 
       const completion = await openai.chat.completions.create({

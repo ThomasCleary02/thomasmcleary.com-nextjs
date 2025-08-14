@@ -2,15 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { openAIService } from '@/lib/services/openai';
 import { locationService } from '@/lib/services/location';
 import { weatherService } from '@/lib/services/weather';
+import { LocationData } from '@/lib/types/location';
 
 export async function GET(request: NextRequest) {
   try {
-    // Get client IP from request headers
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip');
-
-    // Get location data
-    const location = await locationService.getLocationByIp(ip || undefined);
+    // Check if precise coordinates were passed
+    const { searchParams } = new URL(request.url);
+    const lat = searchParams.get('lat');
+    const lng = searchParams.get('lng');
+    
+    let location: LocationData | null = null;
+    
+    if (lat && lng) {
+      // Use precise coordinates from browser geolocation
+      location = {
+        city: "Unknown", // We'll get this from reverse geocoding
+        region: "Unknown",
+        country: "Unknown",
+        countryCode: "XX",
+        lat: parseFloat(lat),
+        long: parseFloat(lng),
+        timezone: "UTC", // We'll get this from the coordinates
+      };
+    } else {
+      // Fallback to IP-based location
+      const forwarded = request.headers.get('x-forwarded-for');
+      const ip = forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip');
+      location = await locationService.getLocationByIp(ip || undefined);
+    }
+    
     if (!location) {
       return NextResponse.json({ 
         greeting: "Hello there! 👋", 

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import RouteButton from './RouteButton';
+import { LocationData } from "@/lib/types/location";
+import { getVisitorLocation } from "@/lib/utils/getVisitorLocation";
 
 interface GreetingResponse {
   greeting: string;
@@ -16,13 +18,24 @@ export default function Hero() {
   useEffect(() => {
     const fetchGreeting = async () => {
       try {
-        const response = await fetch('/api/greeting');
+        // Get precise location first
+        const location = await getVisitorLocation();
+        console.log('Visitor location:', location);
+        
+        // Use the precise coordinates to get weather and greeting
+        const response = await fetch(`/api/greeting?lat=${location.lat}&lng=${location.long}`);
         if (response.ok) {
           const data = await response.json();
           setGreeting(data);
         }
       } catch (error) {
         console.error('Failed to fetch greeting:', error);
+        // Fallback to IP-based greeting
+        const response = await fetch('/api/greeting');
+        if (response.ok) {
+          const data = await response.json();
+          setGreeting(data);
+        }
       } finally {
         setIsLoading(false);
       }
