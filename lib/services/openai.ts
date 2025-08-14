@@ -118,7 +118,7 @@ Return ONLY the JSON object.`
       await this.cache.set(cacheKey, response, 30 * 60 * 1000);
 
       return response;
-    } catch (error) {
+    } catch {
       // Use fallback on any error
       return this.generateFallbackGreeting(weather, timeOfDay, city);
     }
@@ -185,7 +185,7 @@ Return ONLY the JSON object.`
       });
 
       return completion.choices[0]?.message?.content || "A project built with modern web technologies.";
-    } catch (error) {
+    } catch {
       return "A project built with modern web technologies.";
     }
   }
