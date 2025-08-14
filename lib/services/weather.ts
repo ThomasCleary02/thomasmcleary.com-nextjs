@@ -1,4 +1,4 @@
-import { WeatherData } from "../types/weather";
+import { WeatherData, OneCallResponse, CurrentWeatherResponse } from "../types/weather";
 import { LocationData } from "../types/location";
 import { CacheManager } from "../utils/cache";
 import { validateCoordinates } from "../utils/validation";
@@ -44,7 +44,7 @@ export class WeatherService {
                 } else if (response.status === 401) {
                     console.warn('One Call API 3.0 requires subscription, falling back to 2.5');
                 }
-            } catch (error) {
+            } catch {
                 console.warn('One Call API 3.0 failed, trying fallback');
             }
             
@@ -86,7 +86,7 @@ export class WeatherService {
         }
     }
     
-    private parseOneCallResponse(data: any): WeatherData {
+    private parseOneCallResponse(data: OneCallResponse): WeatherData {
         return {
             temperature: Math.round(data.current.temp),
             condition: data.current.weather[0].description,
@@ -98,7 +98,7 @@ export class WeatherService {
         };
     }
     
-    private parseCurrentWeatherResponse(data: any): WeatherData {
+    private parseCurrentWeatherResponse(data: CurrentWeatherResponse): WeatherData {
         return {
             temperature: Math.round(data.main.temp),
             condition: data.weather[0].description,
