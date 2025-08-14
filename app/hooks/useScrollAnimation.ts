@@ -7,6 +7,7 @@ export function useScrollAnimation(): { ref: React.RefObject<HTMLDivElement | nu
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const currentRef = ref.current;
     const observer = new IntersectionObserver(
       ([entry]): void => {
         if (entry.isIntersecting) {
@@ -19,13 +20,13 @@ export function useScrollAnimation(): { ref: React.RefObject<HTMLDivElement | nu
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return (): void => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);

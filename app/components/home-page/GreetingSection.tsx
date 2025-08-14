@@ -6,15 +6,15 @@ import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 import Image from 'next/image';
 
-export default function GreetingSection() {
+export default function GreetingSection(): React.JSX.Element {
   const [greeting, setGreeting] = useState('Hello');
   const [location, setLocation] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  useEffect(() => {
-    const fetchData = async () => {
+  useEffect((): void => {
+    const fetchData = async (): Promise<void> => {
       try {
         const greetingResponse = await fetch('/api/greeting');
         if (greetingResponse.ok) {
@@ -30,10 +30,10 @@ export default function GreetingSection() {
               setLocation(` from ${locationData.city}, ${locationData.region}`);
             }
           }
-        } catch (error) {
+        } catch {
           // Location is optional
         }
-      } catch (error) {
+      } catch {
         setGreeting('Hello');
       } finally {
         setIsLoading(false);

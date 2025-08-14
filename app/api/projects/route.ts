@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAllProjects, createProject } from '@/lib/services/project';
 import { CreateProjectRequest } from '@/lib/types/project';
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     const projects = await getAllProjects();
     return NextResponse.json(projects);
@@ -15,7 +15,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body: CreateProjectRequest = await request.json();
     

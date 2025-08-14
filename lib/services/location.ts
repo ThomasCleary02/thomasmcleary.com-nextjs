@@ -215,10 +215,10 @@ export class LocationService {
     }
   }
 
-  private logOnce(key: string, msg: string): void {
+  private logOnce(key: string, _msg: string): void {
     if (this.loggedOnce.has(key)) return;
     this.loggedOnce.add(key);
-    console.log(msg);
+    // Removed console.log to comply with ESLint rules
   }
 
   private warnOnce(key: string, msg: string): void {

@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Project } from '@/lib/types/project';
 import { ExternalLink, Github, Code } from 'lucide-react';
+import Image from 'next/image';
 
 interface ProjectTileProps {
   project: Project;
 }
 
-const ProjectTile = ({ project }: ProjectTileProps) => {
+const ProjectTile = ({ project }: ProjectTileProps): React.JSX.Element => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -116,9 +117,11 @@ const ProjectTile = ({ project }: ProjectTileProps) => {
                   {/* Project Image - Only shown in modal */}
                   {project.image_url && (
                     <div className="w-24 h-24 lg:w-32 lg:h-32 flex-shrink-0">
-                      <img 
+                      <Image 
                         src={project.image_url} 
                         alt={project.title} 
+                        width={128}
+                        height={128}
                         className="w-full h-full object-cover rounded-xl shadow-lg"
                       />
                     </div>

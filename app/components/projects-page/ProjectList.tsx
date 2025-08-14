@@ -5,13 +5,13 @@ import { Project } from "@/lib/types/project";
 import ProjectTile from "./ProjectTile";
 import { Loader2, AlertCircle, FolderOpen } from 'lucide-react';
 
-const ProjectList = () => {
+const ProjectList = (): React.JSX.Element => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
+  useEffect((): void => {
+    const fetchProjects = async (): Promise<void> => {
       try {
         const response = await fetch("/api/projects");
         

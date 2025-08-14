@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 export default function Footer(): React.JSX.Element {
   return (
@@ -15,9 +16,9 @@ export default function Footer(): React.JSX.Element {
           <div>
             <h3 className="text-xl font-semibold mb-4 text-blue-400">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/" className="text-gray-300 hover:text-blue-400 transition-colors">Home</a></li>
-              <li><a href="/about" className="text-gray-300 hover:text-blue-400 transition-colors">About</a></li>
-              <li><a href="/projects" className="text-gray-300 hover:text-blue-400 transition-colors">Projects</a></li>
+              <li><Link href="/" className="text-gray-300 hover:text-blue-400 transition-colors">Home</Link></li>
+              <li><Link href="/about" className="text-gray-300 hover:text-blue-400 transition-colors">About</Link></li>
+              <li><Link href="/projects" className="text-gray-300 hover:text-blue-400 transition-colors">Projects</Link></li>
             </ul>
           </div>
           

@@ -3,9 +3,9 @@ import { getProjectById, updateProject, deleteProject } from '@/lib/services/pro
 import { UpdateProjectRequest } from '@/lib/types/project';
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   try {
     const { id } = await params;
     const project = await getProjectById(id);
@@ -30,7 +30,7 @@ export async function GET(
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   try {
     const { id } = await params;
     const body: Partial<UpdateProjectRequest> = await request.json();
@@ -48,9 +48,9 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   try {
     const { id } = await params;
     await deleteProject(id);

@@ -13,18 +13,18 @@ export default function Navigation(): React.JSX.Element {
   const [hasScrolled, setHasScrolled] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => {
-    const handleScroll = () => {
+  useEffect((): (() => void) => {
+    const handleScroll = (): void => {
       setHasScrolled(window.scrollY > 0);
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => {
+    return (): void => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  const isActive = (path: string) => {
+  const isActive = (path: string): boolean => {
     return pathname === path;
   };
 

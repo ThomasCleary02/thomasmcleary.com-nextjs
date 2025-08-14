@@ -8,13 +8,13 @@ interface AdminAuthProps {
     onAuthSuccess: () => void;
 }
 
-const AdminAuth = ({ onAuthSuccess }: AdminAuthProps) => {
+const AdminAuth = ({ onAuthSuccess }: AdminAuthProps): React.JSX.Element => {
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
