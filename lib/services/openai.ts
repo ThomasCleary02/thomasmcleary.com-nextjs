@@ -38,7 +38,7 @@ export class OpenAIService {
         messages: [
           {
             role: "system",
-            content: `You are a charismatic AI that creates highly personalized greetings.
+            content: `You are a friendly AI that creates personalized greetings focused on weather and time of day.
 
 IMPORTANT: You MUST return ONLY a valid JSON object with exactly this structure:
 {
@@ -48,30 +48,27 @@ IMPORTANT: You MUST return ONLY a valid JSON object with exactly this structure:
 }
 
 Rules:
-- Make greetings UNIQUE and specific to weather conditions
-- Reference actual temperature and weather description
-- Include location details when possible
+- Focus on saying hi and commenting on the weather, NOT welcoming them to the location
+- Make greetings about the weather conditions and time of day
 - Keep greetings under 120 characters
 - Use MAXIMUM 1 emoji per greeting (preferably none)
-- Make it feel personal, not generic
+- Make it feel personal and conversational
 - Return ONLY the JSON, no other text`
           },
           {
             role: "user",
-            content: `Create a greeting for someone visiting from ${city}, ${region}, ${country}.
+            content: `Create a greeting for someone experiencing this weather.
 
 EXACT WEATHER: ${weather.condition}, ${weather.temperature}°F (feels like ${weather.feelsLike}°F)
 TIME: ${timeOfDay}
-LOCATION: ${city}, ${region}
 
-Make this greeting feel personal and specific to these exact conditions. Keep emojis minimal or none.
+Focus on saying hello and commenting on their weather experience. Don't mention location or welcome them anywhere. Just be friendly about the weather and time of day.
 
 Return ONLY the JSON object.`
           }
         ],
         max_tokens: 150,
         temperature: 0.9,
-        // Remove response_format - it doesn't work with chat.completions
       });
 
       const content = completion.choices[0]?.message?.content;
@@ -93,22 +90,22 @@ Return ONLY the JSON object.`
             parsedResponse = JSON.parse(match[0]);
           } catch {
             // If regex extraction fails, use fallback
-            return this.generateFallbackGreeting(weather, timeOfDay, city);
+            return this.generateFallbackGreeting(weather, timeOfDay);
           }
         } else {
           // No JSON found, use fallback
-          return this.generateFallbackGreeting(weather, timeOfDay, city);
+          return this.generateFallbackGreeting(weather, timeOfDay);
         }
       }
       
       // Validate we have at least a greeting
       if (!parsedResponse || !parsedResponse.greeting) {
-        return this.generateFallbackGreeting(weather, timeOfDay, city);
+        return this.generateFallbackGreeting(weather, timeOfDay);
       }
       
       // Extra safety: guarantee all fields are populated
       const response: GreetingResponse = {
-        greeting: String(parsedResponse.greeting || this.generateFallbackGreeting(weather, timeOfDay, city).greeting),
+        greeting: String(parsedResponse.greeting || this.generateFallbackGreeting(weather, timeOfDay).greeting),
         emoji: String(parsedResponse.emoji || '👋'),
         tone: (parsedResponse.tone || 'friendly') as 'friendly' | 'professional' | 'casual',
         timestamp: Date.now()
@@ -120,31 +117,30 @@ Return ONLY the JSON object.`
       return response;
     } catch {
       // Use fallback on any error
-      return this.generateFallbackGreeting(weather, timeOfDay, city);
+      return this.generateFallbackGreeting(weather, timeOfDay);
     }
   }
 
   private generateFallbackGreeting(
     weather: WeatherData, 
-    timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night',
-    city: string
+    timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night'
   ): GreetingResponse {
     let greeting = '';
     let emoji = '';
     const tone: 'friendly' | 'professional' | 'casual' = 'friendly';
 
-    // Weather-based greetings with more personality - ALL in °F now
+    // Weather-based greetings focused on experience, not location
     if (weather.condition.toLowerCase().includes('rain')) {
-      greeting = `Rainy ${timeOfDay} in ${city}! Perfect weather for cozy coding ☔`;
+      greeting = `Rainy ${timeOfDay}! Perfect weather for cozy coding ☔`;
       emoji = '☔';
-    } else if (weather.condition.toLowerCase().includes('sun') || weather.temperature > 75) { // 75°F = ~24°C
-      greeting = `Sunny ${timeOfDay}! ${weather.temperature}°F of perfect weather in ${city} ☀️`;
+    } else if (weather.condition.toLowerCase().includes('sun') || weather.temperature > 75) {
+      greeting = `Sunny ${timeOfDay}! ${weather.temperature}°F of perfect weather ☀️`;
       emoji = '☀️';
-    } else if (weather.temperature < 50) { // 50°F = ~10°C
-      greeting = `Chilly ${timeOfDay} in ${city}! ${weather.temperature}°F calls for hot coffee 🧥`;
+    } else if (weather.temperature < 50) {
+      greeting = `Chilly ${timeOfDay}! ${weather.temperature}°F calls for hot coffee 🧥`;
       emoji = '🧥';
     } else {
-      greeting = `Lovely ${timeOfDay}! ${weather.temperature}°F and ${weather.condition} in ${city} 👋`;
+      greeting = `Lovely ${timeOfDay}! ${weather.temperature}°F and ${weather.condition} 👋`;
       emoji = '👋';
     }
 

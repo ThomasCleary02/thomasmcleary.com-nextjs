@@ -1,12 +1,12 @@
-import Hero from './components/Hero';
-import AboutMeSection from './components/AboutMe';
-import CTASec from './components/CallToAction';
+import Hero from './components/home-page/Hero';
+import GreetingSection from './components/home-page/GreetingSection';
+import CTASec from './components/home-page/CallToAction';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
       <Hero />
-      <AboutMeSection />
+      <GreetingSection />
       <CTASec />
     </div>
   );

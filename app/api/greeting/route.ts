@@ -117,7 +117,8 @@ export async function GET(request: NextRequest) {
     );
 
     return NextResponse.json(greetingResponse);
-  } catch {
+  } catch (error) {
+    console.error('Greeting API error:', error);
     // Fallback greeting
     return NextResponse.json({
       greeting: "Hello there! 👋",
