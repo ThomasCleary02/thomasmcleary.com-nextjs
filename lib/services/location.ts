@@ -112,7 +112,7 @@ export class LocationService {
               };
             }
           }
-        } catch (err) {
+        } catch {
           this.warnOnce(`ipinfo-ex:${clientIP}`, `ipinfo.io failed for ${clientIP}`);
         }
       }
