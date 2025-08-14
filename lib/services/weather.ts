@@ -35,7 +35,7 @@ export class WeatherService {
             
             // Try One Call API 3.0 first (paid tier)
             try {
-                const oneCallUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${location.lat}&lon=${location.long}&exclude=minutely,hourly,daily,alerts&appid=${OPENWEATHER_API_KEY}&units=metric`;
+                const oneCallUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${location.lat}&lon=${location.long}&exclude=minutely,hourly,daily,alerts&appid=${OPENWEATHER_API_KEY}&units=imperial`;
                 
                 const response = await fetch(oneCallUrl);
                 if (response.ok) {
@@ -51,7 +51,7 @@ export class WeatherService {
             // Fallback to Current Weather API 2.5 (free tier)
             if (!weatherData) {
                 try {
-                    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.long}&appid=${OPENWEATHER_API_KEY}&units=metric`;
+                    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.long}&appid=${OPENWEATHER_API_KEY}&units=imperial`;
                     
                     console.log('Weather API URL:', currentWeatherUrl.replace(OPENWEATHER_API_KEY, '***HIDDEN***'));
                     console.log('Location data:', { lat: location.lat, long: location.long });

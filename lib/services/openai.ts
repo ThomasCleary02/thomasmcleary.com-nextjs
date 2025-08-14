@@ -48,8 +48,9 @@ export class OpenAIService {
             - Include location-specific details when possible
             - Vary the tone and style - don't be repetitive
             - Keep greetings under 120 characters for mobile display
-            - Use weather-appropriate emojis that match the conditions
+            - Use MAXIMUM 1 emoji per greeting (preferably none)
             - Make it feel like a real person greeting them, not a generic message
+            - Focus on weather context and location details
             
             Return JSON: { greeting: string, emoji: string, tone: string }`
           },
@@ -57,11 +58,11 @@ export class OpenAIService {
             role: "user",
             content: `Create a unique greeting for someone visiting from ${city}, ${region}, ${country}.
             
-            EXACT WEATHER: ${weather.condition}, ${weather.temperature}°C (feels like ${weather.feelsLike}°C)
+            EXACT WEATHER: ${weather.condition}, ${weather.temperature}°F (feels like ${weather.feelsLike}°F)
             TIME: ${timeOfDay}
             LOCATION: ${city}, ${region}
             
-            Make this greeting feel personal and specific to these exact conditions. Don't be generic!`
+            Make this greeting feel personal and specific to these exact conditions. Keep emojis minimal or none.`
           }
         ],
         max_tokens: 150,
