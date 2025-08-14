@@ -33,40 +33,45 @@ export class OpenAIService {
     }
 
     try {
-      
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
-            content: `You are a charismatic AI that creates highly personalized, contextual greetings. 
-            
-            CRITICAL RULES:
-            - Make each greeting UNIQUE and SPECIFIC to the exact weather conditions
-            - Reference the actual temperature numbers and weather description
-            - Include location-specific details when possible
-            - Vary the tone and style - don't be repetitive
-            - Keep greetings under 120 characters for mobile display
-            - Use MAXIMUM 1 emoji per greeting (preferably none)
-            - Make it feel like a real person greeting them, not a generic message
-            - Focus on weather context and location details
-            
-            Return JSON: { greeting: string, emoji: string, tone: string }`
+            content: `You are a charismatic AI that creates highly personalized greetings.
+
+IMPORTANT: You MUST return ONLY a valid JSON object with exactly this structure:
+{
+  "greeting": "your greeting text here",
+  "emoji": "emoji here", 
+  "tone": "friendly"
+}
+
+Rules:
+- Make greetings UNIQUE and specific to weather conditions
+- Reference actual temperature and weather description
+- Include location details when possible
+- Keep greetings under 120 characters
+- Use MAXIMUM 1 emoji per greeting (preferably none)
+- Make it feel personal, not generic
+- Return ONLY the JSON, no other text`
           },
           {
             role: "user",
-            content: `Create a unique greeting for someone visiting from ${city}, ${region}, ${country}.
-            
-            EXACT WEATHER: ${weather.condition}, ${weather.temperature}°F (feels like ${weather.feelsLike}°F)
-            TIME: ${timeOfDay}
-            LOCATION: ${city}, ${region}
-            
-            Make this greeting feel personal and specific to these exact conditions. Keep emojis minimal or none.`
+            content: `Create a greeting for someone visiting from ${city}, ${region}, ${country}.
+
+EXACT WEATHER: ${weather.condition}, ${weather.temperature}°F (feels like ${weather.feelsLike}°F)
+TIME: ${timeOfDay}
+LOCATION: ${city}, ${region}
+
+Make this greeting feel personal and specific to these exact conditions. Keep emojis minimal or none.
+
+Return ONLY the JSON object.`
           }
         ],
         max_tokens: 150,
-        temperature: 0.9, // Higher creativity
-        response_format: { type: "json_object" }
+        temperature: 0.9,
+        // Remove response_format - it doesn't work with chat.completions
       });
 
       const content = completion.choices[0]?.message?.content;
@@ -74,24 +79,38 @@ export class OpenAIService {
         throw new Error('No response from OpenAI');
       }
 
-      let parsedResponse;
+      // Try to extract JSON from the response (handles cases where model adds extra text)
+      let parsedResponse: Record<string, unknown>;
       try {
+        // First try direct JSON parse
         parsedResponse = JSON.parse(content);
-      } catch (parseError) {
-        console.error('Failed to parse OpenAI response:', content);
-        throw new Error('Invalid JSON response from OpenAI');
+      } catch {
+        // If that fails, try to extract JSON from text using regex
+        const text = content.trim();
+        const match = text.match(/\{[\s\S]*\}/); // grab JSON object in braces
+        if (match) {
+          try {
+            parsedResponse = JSON.parse(match[0]);
+          } catch {
+            // If regex extraction fails, use fallback
+            return this.generateFallbackGreeting(weather, timeOfDay, city);
+          }
+        } else {
+          // No JSON found, use fallback
+          return this.generateFallbackGreeting(weather, timeOfDay, city);
+        }
       }
       
-      // More flexible validation - check if we have at least a greeting
-      if (!parsedResponse.greeting) {
-        console.error('OpenAI response missing greeting:', parsedResponse);
-        throw new Error('Missing greeting in OpenAI response');
+      // Validate we have at least a greeting
+      if (!parsedResponse || !parsedResponse.greeting) {
+        return this.generateFallbackGreeting(weather, timeOfDay, city);
       }
       
+      // Extra safety: guarantee all fields are populated
       const response: GreetingResponse = {
-        greeting: parsedResponse.greeting,
-        emoji: parsedResponse.emoji || '👋', // Default emoji if missing
-        tone: parsedResponse.tone || 'friendly', // Default tone if missing
+        greeting: String(parsedResponse.greeting || this.generateFallbackGreeting(weather, timeOfDay, city).greeting),
+        emoji: String(parsedResponse.emoji || '👋'),
+        tone: (parsedResponse.tone || 'friendly') as 'friendly' | 'professional' | 'casual',
         timestamp: Date.now()
       };
 
@@ -100,8 +119,7 @@ export class OpenAIService {
 
       return response;
     } catch (error) {
-      console.error('OpenAI API error:', error);
-      // Pass city to fallback method
+      // Use fallback on any error
       return this.generateFallbackGreeting(weather, timeOfDay, city);
     }
   }
@@ -168,7 +186,6 @@ export class OpenAIService {
 
       return completion.choices[0]?.message?.content || "A project built with modern web technologies.";
     } catch (error) {
-      console.error('OpenAI API error:', error);
       return "A project built with modern web technologies.";
     }
   }
