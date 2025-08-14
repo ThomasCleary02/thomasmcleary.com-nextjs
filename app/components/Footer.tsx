@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Footer() {
+export default function Footer(): React.JSX.Element {
   return (
     <footer className="bg-gray-900 dark:bg-black text-white py-12">
       <div className="container mx-auto max-w-6xl px-4">

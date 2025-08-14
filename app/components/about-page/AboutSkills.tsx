@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Monitor, Server, Settings } from 'lucide-react';
+import React from 'react';
 
-export default function AboutSkills() {
+export default function AboutSkills(): React.JSX.Element {
   const skillCategories = [
     {
       title: "Frontend Development",

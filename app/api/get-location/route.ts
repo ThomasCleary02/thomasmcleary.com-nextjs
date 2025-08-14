@@ -1,13 +1,24 @@
-import { NextRequest } from "next/server";
-import { locationService } from "@/lib/services/location";
+import { NextRequest, NextResponse } from 'next/server';
+import { locationService } from '@/lib/services/location';
 
-export async function GET(request: NextRequest) {
-  // Extract real client IP from Vercel headers
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || undefined;
-
-  const location = await locationService.getLocationByIp(ip);
-  return new Response(JSON.stringify(location), { 
-    headers: { "Content-Type": "application/json" } 
-  });
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  try {
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = forwarded?.split(',')[0]?.trim();
+    
+    const location = await locationService.getLocationByIp(ip || undefined);
+    
+    if (!location) {
+      return NextResponse.json({ 
+        error: 'Unable to determine location' 
+      }, { status: 400 });
+    }
+    
+    return NextResponse.json(location);
+  } catch (error) {
+    console.error('Location API error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to get location' 
+    }, { status: 500 });
+  }
 }

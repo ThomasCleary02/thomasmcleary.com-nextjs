@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Project, CreateProjectRequest } from '@/lib/types/project';
 import AdminAuth from '../components/admin-page/AdminAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, LogOut, FolderOpen, CheckCircle, AlertCircle } from 'lucide-react';
 
-export default function AdminDashboard() {
+export default function AdminDashboard(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,20 +23,21 @@ export default function AdminDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  useEffect(() => {
+  useEffect((): void => {
+    // Check if already authenticated
     const authStatus = sessionStorage.getItem('adminAuth');
     if (authStatus === 'true') {
       setIsAuthenticated(true);
     }
   }, []);
 
-  useEffect(() => {
+  useEffect((): void => {
     if (isAuthenticated) {
       fetchProjects();
     }
   }, [isAuthenticated]);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (): Promise<void> => {
     try {
       const response = await fetch('/api/projects');
       if (!response.ok) throw new Error('Failed to fetch projects');
@@ -50,7 +51,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage(null);
@@ -81,7 +82,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const addTechnology = () => {
+  const addTechnology = (): void => {
     if (newTech.trim() && !formData.technologies.includes(newTech.trim())) {
       setFormData({
         ...formData,
@@ -91,14 +92,14 @@ export default function AdminDashboard() {
     }
   };
 
-  const removeTechnology = (tech: string) => {
+  const removeTechnology = (tech: string): void => {
     setFormData({
       ...formData,
       technologies: formData.technologies.filter(t => t !== tech)
     });
   };
 
-  const deleteProject = async (id: string) => {
+  const deleteProject = async (id: string): Promise<void> => {
     if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
       return;
     }
@@ -117,7 +118,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     sessionStorage.removeItem('adminAuth');
     setIsAuthenticated(false);
     setProjects([]);

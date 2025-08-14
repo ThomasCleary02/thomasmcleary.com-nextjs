@@ -35,7 +35,7 @@ async function reverseGeocode(lat: number, lng: number): Promise<LocationData | 
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // Check if precise coordinates were passed
     const { searchParams } = new URL(request.url);

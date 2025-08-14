@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import React from 'react';
 
-export default function Hero() {
+export default function Hero(): React.JSX.Element {
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 pt-24">
       {/* Background gradient - Enhanced dark mode */}

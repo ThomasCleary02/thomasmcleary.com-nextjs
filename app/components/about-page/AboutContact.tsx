@@ -1,36 +1,64 @@
 'use client';
 
-import { Mail, Linkedin } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Mail, Linkedin, Github } from 'lucide-react';
+import React from 'react';
 
-export default function AboutContact() {
+export default function AboutContact(): React.JSX.Element {
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
-      <div className="container mx-auto max-w-6xl px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-          Let's Connect
-        </h2>
-        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-          I'm always interested in new opportunities, collaborations, and interesting projects. 
-          Let's discuss how we can work together to bring your ideas to life.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a 
-            href="mailto:your.email@example.com" 
-            className="px-8 py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-all duration-300 font-medium inline-flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+    <section className="py-16 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
+      <div className="container mx-auto max-w-4xl px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl lg:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-6">
+            Let&apos;s Connect
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            I&apos;m always interested in new opportunities and collaborations. 
+            Feel free to reach out if you&apos;d like to discuss a project or just say hello!
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-6"
+        >
+          <a
+            href="mailto:thomas@example.com"
+            className="flex items-center gap-3 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <Mail className="w-5 h-5 mr-2" />
-            Get In Touch
+            <Mail className="h-5 w-5" />
+            <span className="font-medium">Email Me</span>
           </a>
-          <a 
-            href="https://linkedin.com/in/yourprofile" 
-            target="_blank" 
+
+          <a
+            href="https://linkedin.com/in/thomascleary"
+            target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-4 border-2 border-blue-600 dark:border-blue-700 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 hover:text-white transition-all duration-300 font-medium inline-flex items-center"
+            className="flex items-center gap-3 px-6 py-3 bg-blue-700 dark:bg-blue-600 text-white rounded-xl hover:bg-blue-800 dark:hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <Linkedin className="w-5 h-5 mr-2" />
-            LinkedIn
+            <Linkedin className="h-5 w-5" />
+            <span className="font-medium">LinkedIn</span>
           </a>
-        </div>
+
+          <a
+            href="https://github.com/thomascleary"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-xl hover:bg-gray-900 dark:hover:bg-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <Github className="h-5 w-5" />
+            <span className="font-medium">GitHub</span>
+          </a>
+        </motion.div>
       </div>
     </section>
   );

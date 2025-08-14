@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import React from 'react';
 
-export default function CTASec() {
+export default function CTASec(): React.JSX.Element {
   return (
     <section className="py-20 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 dark:from-blue-800 dark:via-blue-700 dark:to-blue-600 relative overflow-hidden">
       {/* Enhanced floating elements for dark mode */}

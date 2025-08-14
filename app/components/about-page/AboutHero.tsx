@@ -1,4 +1,6 @@
-export default function AboutHero() {
+import React from 'react';
+
+export default function AboutHero(): React.JSX.Element {
   return (
     <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 dark:from-blue-900 dark:via-blue-800 dark:to-blue-700 min-h-[60vh] flex items-center justify-center px-4 z-10">
       {/* Floating elements for consistency with home page */}
