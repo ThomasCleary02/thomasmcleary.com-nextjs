@@ -25,7 +25,7 @@ export class LocationService {
 
     // Private/local checks
     if (this.isLocalOrPrivate(clientIP)) {
-      this.logOnce(`local-ip:${clientIP}`, `Local/private IP detected (${clientIP}); using default location`);
+      this.logOnce(`local-ip:${clientIP}`);
       return this.getDefaultLocation();
     }
 
@@ -215,7 +215,7 @@ export class LocationService {
     }
   }
 
-  private logOnce(key: string, _msg: string): void {
+  private logOnce(key: string): void {
     if (this.loggedOnce.has(key)) return;
     this.loggedOnce.add(key);
     // Removed console.log to comply with ESLint rules
