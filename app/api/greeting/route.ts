@@ -79,9 +79,7 @@ export async function GET(request: NextRequest) {
     );
 
     return NextResponse.json(greetingResponse);
-  } catch (error) {
-    // Remove console.error for production
-    // console.error('Error generating greeting:', error);
+  } catch {
     
     // Fallback greeting
     return NextResponse.json({
