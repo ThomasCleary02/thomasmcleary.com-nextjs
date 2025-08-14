@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import RouteButton from './RouteButton';
-import { LocationData } from "@/lib/types/location";
 import { getVisitorLocation } from "@/lib/utils/getVisitorLocation";
 
 interface GreetingResponse {
