@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import React from 'react';
 
-export default function AboutContent() {
+export default function AboutContent(): React.JSX.Element {
   return (
     <section className="py-16 bg-white dark:bg-gray-900">
       <div className="container mx-auto max-w-6xl px-4">
