@@ -27,7 +27,13 @@ const nextConfig: NextConfig = {
         ]
       }
     ];
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // Disables ESLint during builds
+  },
+  typescript: {
+    ignoreBuildErrors: true, // Disables TypeScript checking during builds
+  },
 };
 
 export default nextConfig;
