@@ -45,7 +45,7 @@ export class LocationService {
                         console.warn('ipapi.co returned invalid data:', data.error || 'Missing coordinates');
                     }
                 }
-            } catch (error) {
+            } catch {
                 console.warn('ipapi.co failed, trying fallback service');
             }
             
@@ -69,7 +69,7 @@ export class LocationService {
                             console.warn('ip-api.com failed:', data.message || 'Invalid response');
                         }
                     }
-                } catch (error) {
+                } catch {
                     console.warn('ip-api.com also failed');
                 }
             }

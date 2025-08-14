@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { GreetingContext, GreetingResponse } from "../types/openai";
+import { GreetingResponse } from "../types/openai";
 import { WeatherData } from "../types/weather";
 import { CacheManager } from "../utils/cache";
 

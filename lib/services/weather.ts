@@ -80,9 +80,9 @@ export class WeatherService {
             this.cache.set(cacheKey, weatherData, CACHE_TTL);
 
             return weatherData;
-        } catch (error) {
-            console.error('Error in weather service:', error);
-            return this.getFallbackWeather(location);
+        } catch {
+            console.error('Error fetching weather data');
+            return null;
         }
     }
     
