@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProjectById, updateProject, deleteProject } from '@/lib/services/projectService';
+import { getProjectById, updateProject, deleteProject } from '@/lib/services/project';
 import { UpdateProjectRequest } from '@/lib/types/project';
 
 export async function GET(
