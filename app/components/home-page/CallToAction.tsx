@@ -27,7 +27,7 @@ export default function CTASec(): React.JSX.Element {
             View My Work
           </Link>
           <Link 
-            href="mailto:your.email@example.com"
+            href="mailto:thomas@thomasmcleary.com"
             className="px-8 py-4 border-2 border-white dark:border-gray-200 text-white dark:text-gray-200 rounded-lg hover:bg-white dark:hover:bg-gray-200 hover:text-blue-600 dark:hover:text-blue-700 transition-all duration-300 font-semibold"
           >
             Get In Touch

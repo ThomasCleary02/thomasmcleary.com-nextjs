@@ -4,6 +4,7 @@ import './globals.css'
 import Navigation from './components/Navigation'
 import Footer from './components/Footer'
 import { ThemeProvider } from './contexts/ThemeContext'
+import StructuredData from './components/StructuredData';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -18,14 +19,30 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: 'Thomas Cleary - Software Engineer',
+  title: {
+    default: 'Thomas Cleary - Software Engineer',
+    template: '%s | Thomas Cleary'
+  },
   description: 'Full-stack software engineer specializing in web development, mobile applications, and innovative solutions. View my portfolio of projects and get in touch.',
-  keywords: 'software engineer, full-stack developer, web development, React, Python, portfolio',
+  keywords: ['software engineer', 'full-stack developer', 'web development', 'React', 'Python', 'portfolio', 'Thomas Cleary'],
   authors: [{ name: 'Thomas Cleary' }],
   creator: 'Thomas Cleary',
   publisher: 'Thomas Cleary',
-  robots: 'index, follow',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   metadataBase: new URL('https://thomasmcleary.com'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Thomas Cleary - Software Engineer',
     description: 'Full-stack software engineer specializing in web development, mobile applications, and innovative solutions.',
@@ -47,7 +64,15 @@ export const metadata: Metadata = {
     title: 'Thomas Cleary - Software Engineer',
     description: 'Full-stack software engineer specializing in web development, mobile applications, and innovative solutions.',
     images: ['/og-image.png'],
+    creator: '@yourtwitterhandle', // Add if you have one
   },
+  verification: {
+    google: 'your-google-verification-code', // Add Google Search Console verification
+    // yandex: 'your-yandex-verification-code',
+    // yahoo: 'your-yahoo-verification-code',
+  },
+  category: 'technology',
+  classification: 'portfolio',
 }
 
 export const viewport: Viewport = {
@@ -68,6 +93,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
+        <StructuredData />
       </head>
       <body className={`${inter.variable} ${nunito.variable} font-body`}>
         <ThemeProvider>

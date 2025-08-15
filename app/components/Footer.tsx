@@ -25,9 +25,9 @@ export default function Footer(): React.JSX.Element {
           <div>
             <h3 className="text-xl font-semibold mb-4 text-blue-400">Connect</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="mailto:your.email@example.com" className="text-gray-300 hover:text-blue-400 transition-colors">Email</a></li>
-              <li><a href="https://linkedin.com/in/yourprofile" className="text-gray-300 hover:text-blue-400 transition-colors">LinkedIn</a></li>
-              <li><a href="https://github.com/yourusername" className="text-gray-300 hover:text-blue-400 transition-colors">GitHub</a></li>
+              <li><a href="mailto:thomas@thomasmcleary.com" className="text-gray-300 hover:text-blue-400 transition-colors">Email</a></li>
+              <li><a href="https://www.linkedin.com/in/t-cleary/" className="text-gray-300 hover:text-blue-400 transition-colors">LinkedIn</a></li>
+              <li><a href="https://github.com/ThomasCleary02" className="text-gray-300 hover:text-blue-400 transition-colors">GitHub</a></li>
             </ul>
           </div>
         </div>

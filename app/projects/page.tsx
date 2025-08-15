@@ -1,8 +1,21 @@
-'use client';
-
+import { Metadata } from 'next';
 import ProjectList from "../components/projects-page/ProjectList";
 
-const ProjectsPage = (): React.JSX.Element => {
+export const metadata: Metadata = {
+  title: 'Projects - Thomas Cleary',
+  description: 'A showcase of my work across web development, mobile applications, and full-stack solutions. Each project represents a unique challenge and innovative approach to problem-solving.',
+  openGraph: {
+    title: 'Projects - Thomas Cleary',
+    description: 'A showcase of my work across web development, mobile applications, and full-stack solutions.',
+    url: 'https://thomasmcleary.com/projects',
+  },
+  twitter: {
+    title: 'Projects - Thomas Cleary',
+    description: 'A showcase of my work across web development, mobile applications, and full-stack solutions.',
+  },
+};
+
+export default function ProjectsPage(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 py-24">
       <div className="max-w-7xl mx-auto px-4">
@@ -21,5 +34,3 @@ const ProjectsPage = (): React.JSX.Element => {
     </div>
   );
 };
-
-export default ProjectsPage;

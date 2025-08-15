@@ -32,7 +32,7 @@ export default function AboutContact(): React.JSX.Element {
           className="flex flex-col sm:flex-row items-center justify-center gap-6"
         >
           <a
-            href="mailto:thomas@example.com"
+            href="mailto:thomas@thomasmcleary.com"
             className="flex items-center gap-3 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             <Mail className="h-5 w-5" />
@@ -40,7 +40,7 @@ export default function AboutContact(): React.JSX.Element {
           </a>
 
           <a
-            href="https://linkedin.com/in/thomascleary"
+            href="https://www.linkedin.com/in/t-cleary/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-6 py-3 bg-blue-700 dark:bg-blue-600 text-white rounded-xl hover:bg-blue-800 dark:hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
@@ -50,7 +50,7 @@ export default function AboutContact(): React.JSX.Element {
           </a>
 
           <a
-            href="https://github.com/thomascleary"
+            href="https://github.com/ThomasCleary02"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-6 py-3 bg-gray-800 dark:bg-gray-700 text-white rounded-xl hover:bg-gray-900 dark:hover:bg-gray-800 transition-all duration-200 shadow-lg hover:shadow-xl"

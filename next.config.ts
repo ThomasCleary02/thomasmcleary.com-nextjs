@@ -6,6 +6,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
+  // Image optimization
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+  
   // Security headers
   async headers() {
     return [
@@ -23,16 +30,39 @@ const nextConfig: NextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains'
           }
         ]
       }
     ];
   },
+  
+  // Redirects for SEO
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+  
+  // Enable static generation for better SEO
+  trailingSlash: false,
+  
   eslint: {
-    ignoreDuringBuilds: true, // Disables ESLint during builds
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Disables TypeScript checking during builds
+    ignoreBuildErrors: true,
   },
 };
 
