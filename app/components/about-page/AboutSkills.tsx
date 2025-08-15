@@ -1,28 +1,38 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Monitor, Server, Settings } from 'lucide-react';
+import { Monitor, Server, Settings, Cloud } from 'lucide-react';
 import React from 'react';
 
 export default function AboutSkills(): React.JSX.Element {
   const skillCategories = [
     {
-      title: "Frontend Development",
-      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML/CSS"],
+      title: "Frontend & Mobile",
+      skills: ["React", "React Native", "Next.js", "TypeScript", "Tailwind CSS", "Expo"],
       icon: Monitor,
-      color: "from-blue-500 to-blue-600"
+      color: "from-blue-500 to-blue-600",
+      description: "Building responsive, cross-platform applications"
     },
     {
-      title: "Backend Development", 
-      skills: ["Python", "Node.js", "Express", "PostgreSQL", "MongoDB"],
+      title: "Backend & Databases", 
+      skills: ["Python", "Django", "Node.js", "Express", "Firebase", "PostgreSQL", "MongoDB", "Redis"],
       icon: Server,
-      color: "from-green-500 to-green-600"
+      color: "from-green-500 to-green-600",
+      description: "Server-side solutions and data architecture"
     },
     {
-      title: "Tools & Infrastructure",
-      skills: ["Git", "Docker", "AWS", "CI/CD", "Linux"],
+      title: "Cloud & Infrastructure",
+      skills: ["AWS S3", "Lambda", "Route 53", "Rekognition", "Heroku", "Fly.io", "Vercel", "Cloudflare"],
+      icon: Cloud,
+      color: "from-purple-500 to-purple-600",
+      description: "Cloud services and deployment platforms"
+    },
+    {
+      title: "AI & Tools",
+      skills: ["LangChain", "OpenAI APIs", "Git", "Docker", "Figma", "Agile", "Postman"],
       icon: Settings,
-      color: "from-purple-500 to-purple-600"
+      color: "from-orange-500 to-orange-600",
+      description: "AI integration and development tools"
     }
   ];
 
@@ -32,7 +42,7 @@ export default function AboutSkills(): React.JSX.Element {
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white text-center mb-16">
           Technical Expertise
         </h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
           {skillCategories.map((category, index): React.JSX.Element => {
             const IconComponent = category.icon;
             return (
@@ -47,9 +57,12 @@ export default function AboutSkills(): React.JSX.Element {
                 <div className={`w-16 h-16 bg-gradient-to-r ${category.color} rounded-lg flex items-center justify-center mb-6 mx-auto`}>
                   <IconComponent className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 text-center">
                   {category.title}
                 </h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm text-center mb-4">
+                  {category.description}
+                </p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {category.skills.map((skill): React.JSX.Element => (
                     <span key={skill} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">

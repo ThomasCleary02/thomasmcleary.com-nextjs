@@ -102,13 +102,13 @@ export default function GreetingSection(): React.JSX.Element {
                   </motion.div>
                 )}
                 
-                {/* Speech bubble tail - Mobile: points down, Desktop: points left */}
+                {/* Speech bubble tail - Mobile: points down, Desktop: points right */}
                 <div className="lg:hidden absolute top-full left-1/2 transform -translate-x-1/2">
                   <div className="w-0 h-0 border-l-[8px] sm:border-l-[12px] border-r-[8px] sm:border-r-[12px] border-t-[8px] sm:border-t-[12px] border-l-transparent border-r-transparent border-t-white dark:border-t-gray-800"></div>
                 </div>
                 
-                {/* Desktop tail pointing left */}
-                <div className="hidden lg:block absolute left-full top-1/2 transform -translate-y-1/2">
+                {/* Desktop tail pointing right (toward avatar) */}
+                <div className="hidden lg:block absolute right-full top-1/2 transform -translate-y-1/2">
                   <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-r-[12px] border-t-transparent border-b-transparent border-r-white dark:border-r-gray-800"></div>
                 </div>
               </div>
