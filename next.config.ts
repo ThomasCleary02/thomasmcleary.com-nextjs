@@ -11,6 +11,15 @@ const nextConfig: NextConfig = {
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Add this section to allow S3 images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'project-images-bucket.s3.us-east-1.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   
   // Security headers

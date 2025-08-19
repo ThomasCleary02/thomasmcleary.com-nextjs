@@ -19,8 +19,6 @@ export class OpenAIService {
 
   async generateGreeting(
     city: string, 
-    region: string, 
-    country: string, 
     weather: WeatherData, 
     timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night'
   ): Promise<GreetingResponse> {
@@ -38,33 +36,34 @@ export class OpenAIService {
         messages: [
           {
             role: "system",
-            content: `You are a friendly AI that creates personalized greetings focused on weather and time of day.
+            content: 
+              `You are a friendly AI that creates personalized greetings focused on weather and time of day.
 
-IMPORTANT: You MUST return ONLY a valid JSON object with exactly this structure:
-{
-  "greeting": "your greeting text here",
-  "emoji": "emoji here", 
-  "tone": "friendly"
-}
+              IMPORTANT: You MUST return ONLY a valid JSON object with exactly this structure:
+              {
+                "greeting": "your greeting text here",
+                "emoji": "emoji here", 
+                "tone": "friendly"
+              }
 
-Rules:
-- Focus on saying hi and commenting on the weather, NOT welcoming them to the location
-- Make greetings about the weather conditions and time of day
-- Keep greetings under 120 characters
-- Use MAXIMUM 1 emoji per greeting (preferably none)
-- Make it feel personal and conversational
-- Return ONLY the JSON, no other text`
-          },
-          {
-            role: "user",
-            content: `Create a greeting for someone experiencing this weather.
+              Rules:
+              - Focus on saying hi and commenting on the weather, NOT welcoming them to the location
+              - Make greetings about the weather conditions and time of day
+              - Keep greetings under 120 characters
+              - Use MAXIMUM 1 emoji per greeting (preferably none)
+              - Make it feel personal and conversational
+              - Return ONLY the JSON, no other text`
+                        },
+                        {
+                          role: "user",
+                          content: `Create a greeting for someone experiencing this weather.
 
-EXACT WEATHER: ${weather.condition}, ${weather.temperature}°F (feels like ${weather.feelsLike}°F)
-TIME: ${timeOfDay}
+              EXACT WEATHER: ${weather.condition}, ${weather.temperature}°F (feels like ${weather.feelsLike}°F)
+              TIME: ${timeOfDay}
 
-Focus on saying hello and commenting on their weather experience. Don't mention location or welcome them anywhere. Just be friendly about the weather and time of day.
+              Focus on saying hello and commenting on their weather experience. Don't mention location or welcome them anywhere. Just be friendly about the weather and time of day.
 
-Return ONLY the JSON object.`
+              Return ONLY the JSON object.`
           }
         ],
         max_tokens: 150,
