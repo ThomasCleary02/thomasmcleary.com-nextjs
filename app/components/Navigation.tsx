@@ -32,6 +32,7 @@ export default function Navigation(): React.JSX.Element {
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/projects', label: 'Projects' },
+    { href: '/blogs', label: 'Blog' },
   ];
 
   return (
