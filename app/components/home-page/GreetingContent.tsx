@@ -1,10 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
+import { WeatherData } from '@/lib/types/weather';
 
 interface GreetingContentProps {
   greetingData: {
     greeting: string;
-    weather: any;
+    weather: WeatherData; // Define proper weather type
     location: {
       city: string;
       region: string;

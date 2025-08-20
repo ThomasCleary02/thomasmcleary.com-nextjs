@@ -73,16 +73,21 @@ export class BlogService {
      * @returns {Promise<Blog[]>} Array of published blog posts
      * @throws {Error} If the database query fails
      */
-    static async getPublishedBlogs(page: number, limit: number): Promise<Blog[]> {
-        const { data, error } = await supabase
-            .from('blogs')
-            .select('*')
-            .eq('status', 'published')
-            .order('published_at', { ascending: false })
-            .range((page - 1) * limit, page * limit - 1);
+    static async getPublishedBlogs(page: number = 1, limit: number = 10): Promise<Blog[]> {
+        try {
+            const { data, error } = await supabase
+                .from('blogs')
+                .select('*')
+                .eq('status', 'published')
+                .order('published_at', { ascending: false })
+                .range((page - 1) * limit, page * limit - 1);
 
-        if (error) throw error;
-        return data || [];
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            // Silent failure - return empty array instead of logging
+            return [];
+        }
     }
 
     /**

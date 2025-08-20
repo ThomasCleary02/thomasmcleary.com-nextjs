@@ -38,30 +38,48 @@ export class GreetingService {
       let weather;
 
       if (lat && lon) {
-        // GPS coordinates provided
-        location = await this.locationService.getLocationByIP(ip || '127.0.0.1');
+        // GPS coordinates provided - use them directly
+        console.log('📍 Using GPS coordinates:', { lat, lon });
+        
+        // Create location object from coordinates
+        location = {
+          city: 'Your Location',
+          region: 'Your Region',
+          country: 'Your Country',
+          countryCode: 'XX',
+          lat: lat,
+          long: lon,
+          timezone: 'UTC'
+        };
+        
+        // Get weather for the coordinates
         weather = await this.weatherService.getWeather(lat, lon);
       } else {
         // IP-based location
+        console.log('🌐 Using IP-based location:', ip);
         location = await this.locationService.getLocationByIP(ip || '127.0.0.1');
+        
         if (location) {
           weather = await this.weatherService.getWeather(location.lat, location.long);
         }
       }
 
       if (!location) {
+        console.log('❌ No location data available, using fallback');
         return {
-          greeting: 'Hello',
+          greeting: this.getFallbackGreeting(),
           weather: null,
           location: null
         };
       }
 
       if (!weather) {
+        console.log('🌤️ No weather data, attempting to fetch...');
         weather = await this.weatherService.getWeather(location.lat, location.long);
       }
 
       // Get dynamic greeting from OpenAI
+      console.log('🤖 Generating AI greeting for:', location.city);
       const aiGreeting = await this.openaiService.generateGreeting(
         location.city, 
         weather, 
@@ -75,9 +93,10 @@ export class GreetingService {
         feelsLike: weather?.feelsLike || 0
       };
 
+      console.log('✅ Greeting data generated successfully');
       return {
         greeting: aiGreeting.greeting,
-        weather: weatherData, // Include this
+        weather: weatherData,
         location: {
           city: location.city,
           region: location.region,
@@ -85,9 +104,9 @@ export class GreetingService {
         }
       };
     } catch (error) {
-      console.error('Greeting service error:', error);
+      console.error('❌ Greeting service error:', error);
       return {
-        greeting: 'Hello',
+        greeting: this.getFallbackGreeting(),
         weather: null,
         location: null
       };

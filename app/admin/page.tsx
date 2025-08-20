@@ -33,6 +33,12 @@ export default function AdminDashboard(): React.JSX.Element {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
+  // Add this state for editing
+  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
+
+  // Add this state for editing bugs (around line 30 with other state variables)
+  const [editingBug, setEditingBug] = useState<BugType | null>(null);
+
   // Tab configuration
   const tabs = [
     { id: 'projects', label: 'Projects', icon: <FolderOpen className="h-4 w-4" /> },
@@ -229,14 +235,66 @@ export default function AdminDashboard(): React.JSX.Element {
     }
   };
 
-  const handleBugEdit = (bug: BugType) => {
-    // TODO: Implement bug editing
-    console.log('Edit bug:', bug);
+  // Implement proper bug editing
+  const handleBugEdit = async (bug: BugType) => {
+    // TODO: Implement proper bug editing modal/form
+    setEditingBug(bug);
+    setActiveTab('bugs');
   };
 
+  // Implement bug status updates
   const handleBugStatusUpdate = async (id: string, status: BugType['status'], notes?: string) => {
-    // TODO: Implement bug status update
-    console.log('Update bug status:', { id, status, notes });
+    try {
+      const response = await fetch(`/api/bugs/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, notes }),
+      });
+      
+      if (response.ok) {
+        const updatedBug = await response.json();
+        setBugs(bugs.map(b => b.id === id ? updatedBug : b));
+        setMessage({ type: 'success', text: 'Bug status updated successfully!' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to update bug status' });
+    }
+  };
+
+  // Add this handler
+  const handleBlogEdit = (blog: Blog) => {
+    setEditingBlog(blog);
+    setActiveTab('blogs'); // Ensure we're on blogs tab
+  };
+
+  // Add this handler for updating
+  const handleBlogUpdate = async (blogData: CreateBlogRequest) => {
+    if (!editingBlog) return;
+    
+    setIsSubmittingBlog(true);
+    setMessage(null);
+    
+    try {
+      const response = await fetch(`/api/blogs/${editingBlog.slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(blogData),
+      });
+
+      if (response.ok) {
+        const updatedBlog = await response.json();
+        setBlogs(blogs.map(b => b.id === editingBlog.id ? updatedBlog : b));
+        setEditingBlog(null);
+        setMessage({ type: 'success', text: 'Blog post updated successfully!' });
+      } else {
+        throw new Error('Failed to update blog post');
+      }
+    } catch (error) {
+      console.error('Error updating blog post:', error);
+      setMessage({ type: 'error', text: 'Failed to update blog post' });
+    } finally {
+      setIsSubmittingBlog(false);
+    }
   };
 
   // Update the logout function
@@ -329,8 +387,15 @@ export default function AdminDashboard(): React.JSX.Element {
 
         {activeTab === 'blogs' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <BlogForm onSubmit={handleBlogSubmit} isSubmitting={isSubmittingBlog} />
-            <BlogList blogs={blogs} onDelete={deleteBlog} onEdit={() => {}} />
+            {editingBlog ? (
+              <BlogForm 
+                onSubmit={handleBlogUpdate} 
+                isSubmitting={isSubmittingBlog} 
+              />
+            ) : (
+              <BlogForm onSubmit={handleBlogSubmit} isSubmitting={isSubmittingBlog} />
+            )}
+            <BlogList blogs={blogs} onDelete={deleteBlog} onEdit={handleBlogEdit} />
           </div>
         )}
 
