@@ -37,7 +37,10 @@ export default function AdminDashboard(): React.JSX.Element {
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
   // Add this state for editing bugs (around line 30 with other state variables)
-  const [editingBug, setEditingBug] = useState<BugType | null>(null);
+  const [_editingBug, setEditingBug] = useState<BugType | null>(null);
+
+  // Add this state for editing projects (around line 30 with other state variables)
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   // Tab configuration
   const tabs = [
@@ -297,6 +300,59 @@ export default function AdminDashboard(): React.JSX.Element {
     }
   };
 
+  // Add this handler for project editing (around line 150 with other handlers)
+  const handleProjectEdit = (project: Project) => {
+    setEditingProject(project);
+    setActiveTab('projects');
+  };
+
+  // Add this handler for project updating (around line 150 with other handlers)
+  const handleProjectUpdate = async (projectData: CreateProjectRequest) => {
+    if (!editingProject) return;
+    
+    setIsSubmitting(true);
+    setMessage(null);
+    
+    try {
+      const response = await fetch(`/api/projects/${editingProject.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projectData),
+      });
+
+      if (response.ok) {
+        const updatedProject = await response.json();
+        setProjects(projects.map(p => p.id === editingProject.id ? updatedProject : p));
+        setEditingProject(null);
+        setMessage({ type: 'success', text: 'Project updated successfully!' });
+      } else {
+        throw new Error('Failed to update project');
+      }
+    } catch (error) {
+      console.error('Error updating project:', error);
+      setMessage({ type: 'error', text: 'Failed to update project' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Add this handler (around line 150 with other handlers)
+  const handleProjectEditCancel = () => {
+    setEditingProject(null);
+  };
+
+  // Update the projects tab section
+  {editingProject ? (
+    <ProjectForm 
+      onSubmit={handleProjectUpdate} 
+      isSubmitting={isSubmitting}
+      editingProject={editingProject}
+      onCancel={handleProjectEditCancel}
+    />
+  ) : (
+    <ProjectForm onSubmit={handleProjectSubmit} isSubmitting={isSubmitting} />
+  )}
+
   // Update the logout function
   const handleLogout = async () => {
     try {
@@ -377,10 +433,20 @@ export default function AdminDashboard(): React.JSX.Element {
         {/* Content Based on Active Tab */}
         {activeTab === 'projects' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <ProjectForm onSubmit={handleProjectSubmit} isSubmitting={isSubmitting} />
+            {editingProject ? (
+              <ProjectForm 
+                onSubmit={handleProjectUpdate} 
+                isSubmitting={isSubmitting}
+                editingProject={editingProject}
+                onCancel={handleProjectEditCancel}
+              />
+            ) : (
+              <ProjectForm onSubmit={handleProjectSubmit} isSubmitting={isSubmitting} />
+            )}
             <ProjectList 
               projects={projects} 
               onDelete={deleteProject}
+              onEdit={handleProjectEdit}
             />
           </div>
         )}

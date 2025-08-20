@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProjectById, updateProject, deleteProject } from '@/lib/services/project';
+import { ProjectService } from '@/lib/services/project';
 import { UpdateProjectRequest } from '@/lib/types/project';
 
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
 ): Promise<NextResponse> {
   try {
     const { id } = await params;
-    const project = await getProjectById(id);
+    const project = await ProjectService.getProjectById(id);
     
     if (!project) {
       return NextResponse.json(
@@ -36,7 +36,7 @@ export async function PUT(
     const body: Partial<UpdateProjectRequest> = await request.json();
     const updateData: UpdateProjectRequest = { ...body, id };
 
-    const project = await updateProject(updateData);
+    const project = await ProjectService.updateProject(id, updateData);
     return NextResponse.json(project);
   } catch (error) {
     console.error('API Error:', error);
@@ -53,7 +53,7 @@ export async function DELETE(
 ): Promise<NextResponse> {
   try {
     const { id } = await params;
-    await deleteProject(id);
+    await ProjectService.deleteProject(id);
     return NextResponse.json({ message: 'Project deleted successfully' });
   } catch (error) {
     console.error('API Error:', error);
