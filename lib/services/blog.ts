@@ -1,9 +1,24 @@
 import { supabase } from "@/lib/supabase";
 import { Blog, CreateBlogRequest, UpdateBlogRequest } from "@/lib/types/blog";
 
+/**
+ * Service class for managing blog operations with Supabase
+ * Provides CRUD operations for blog posts including creation, reading, updating, and deletion
+ */
 export class BlogService {
 
-    // Create a new blog post
+    /**
+     * Creates a new blog post
+     * @param {CreateBlogRequest} blog - The blog data to create
+     * @returns {Promise<Blog>} The created blog post
+     * @throws {Error} If the blog creation fails
+     * @example
+     * const newBlog = await BlogService.createBlog({
+     *   title: "My New Post",
+     *   body: "# Hello World\nThis is my first post",
+     *   status: "draft"
+     * });
+     */
     static async createBlog(blog: CreateBlogRequest): Promise<Blog> {
         try {
             // Add logging
@@ -15,7 +30,7 @@ export class BlogService {
                 published_at: blog.published_at || (blog.status === 'published' ? new Date().toISOString() : null)
             };
             
-            console.log('Processed blog data:', blogData);
+            console.warn('Processed blog data:', blogData);
             
             const { data, error } = await supabase
                 .from('blogs')
@@ -28,6 +43,7 @@ export class BlogService {
                 throw error;
             }
             
+            console.warn('Blog created successfully:', data);
             return data;
         } catch (error) {
             console.error('Service error:', error);
@@ -35,7 +51,11 @@ export class BlogService {
         }
     }
 
-    // Get all published blogs
+    /**
+     * Retrieves all blog posts (admin use)
+     * @returns {Promise<Blog[]>} Array of all blog posts
+     * @throws {Error} If the database query fails
+     */
     static async getAllBlogs(): Promise<Blog[]> {
         const { data, error } = await supabase
             .from('blogs')
@@ -46,7 +66,13 @@ export class BlogService {
         return data || [];
     }
 
-    // Get all published blogs
+    /**
+     * Retrieves published blog posts for public display
+     * @param {number} page - Page number for pagination (1-based)
+     * @param {number} limit - Number of posts per page
+     * @returns {Promise<Blog[]>} Array of published blog posts
+     * @throws {Error} If the database query fails
+     */
     static async getPublishedBlogs(page: number, limit: number): Promise<Blog[]> {
         const { data, error } = await supabase
             .from('blogs')
@@ -59,7 +85,12 @@ export class BlogService {
         return data || [];
     }
 
-    // Get single blog by slug
+    /**
+     * Retrieves a blog post by its slug
+     * @param {string} slug - URL-friendly identifier
+     * @returns {Promise<Blog | null>} Blog post or null if not found
+     * @throws {Error} If the database query fails
+     */
     static async getBlogBySlug(slug: string): Promise<Blog | null> {
         const { data, error } = await supabase
             .from('blogs')
@@ -72,12 +103,18 @@ export class BlogService {
         return data;
     }
 
-    // Update blog
-    static async updateBlog(id: string, updates: UpdateBlogRequest): Promise<Blog> {
+    /**
+     * Updates an existing blog post
+     * @param {string} slug - Blog slug to update
+     * @param {UpdateBlogRequest} updates - Blog data to update
+     * @returns {Promise<Blog>} The updated blog post
+     * @throws {Error} If update fails
+     */
+    static async updateBlog(slug: string, updates: UpdateBlogRequest): Promise<Blog> {
         const { data, error } = await supabase
             .from('blogs')
             .update(updates)
-            .eq('id', id)
+            .eq('slug', slug)
             .select()
             .single();
 
@@ -85,16 +122,30 @@ export class BlogService {
         return data;
     }
 
-    // Delete blog
-    static async deleteBlog(id: string): Promise<void> {
+    /**
+     * Deletes a blog post
+     * @param {string} slug - Blog slug to delete
+     * @returns {Promise<void>} Success confirmation
+     * @throws {Error} If deletion fails
+     */
+    static async deleteBlog(slug: string): Promise<void> {
         const { error } = await supabase
             .from('blogs')
             .delete()
-            .eq('id', id);
+            .eq('slug', slug);
 
         if (error) throw error;
     }
 
+    /**
+     * Generates a URL-friendly slug from a title
+     * @param {string} title - Blog title to convert
+     * @returns {string} URL-friendly slug
+     * @private
+     * @example
+     * const slug = BlogService.generateSlug("My Amazing Blog Post!");
+     * // Returns: "my-amazing-blog-post"
+     */
     private static generateSlug(title: string): string {
         return title
             .toLowerCase()

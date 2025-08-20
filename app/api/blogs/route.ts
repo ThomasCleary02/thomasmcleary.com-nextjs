@@ -1,6 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
-import { BlogService } from "@/lib/services/blog";
+import { NextRequest, NextResponse } from 'next/server';
+import { BlogService } from '@/lib/services/blog';
 
+/**
+ * API endpoint for blog management
+ * Supports GET (list blogs) and POST (create blog) operations
+ */
+
+/**
+ * Retrieves a list of all blogs
+ * @param {NextRequest} request - The incoming request object
+ * @returns {Promise<NextResponse>} JSON response containing blogs array
+ * @throws {Error} If database query fails
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -22,6 +33,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
+/**
+ * Creates a new blog post
+ * @param {NextRequest} request - The incoming request containing blog data
+ * @returns {Promise<NextResponse>} JSON response containing the created blog
+ * @throws {Error} If blog creation fails or validation fails
+ */
 export async function POST(request: NextRequest) {
   try {
     const blogData = await request.json();
@@ -39,8 +56,7 @@ export async function POST(request: NextRequest) {
     
     const blog = await BlogService.createBlog(blogData);
     return NextResponse.json(blog);
-  } catch (error) {
-    console.error('API Error:', error);
+  } catch {
     return NextResponse.json({ error: 'Failed to create blog' }, { status: 500 });
   }
 }

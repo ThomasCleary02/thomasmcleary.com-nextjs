@@ -1,0 +1,17 @@
+{
+  "github": {
+    "url": "https://github.com/ThomasCleary02",
+    "label": "GitHub",
+    "icon": "github"
+  },
+  "linkedin": {
+    "url": "https://linkedin.com/in/t-cleary",
+    "label": "LinkedIn",
+    "icon": "linkedin"
+  },
+  "email": {
+    "url": "mailto:thomas@thomasmcleary.com",
+    "label": "Email",
+    "icon": "mail"
+  }
+}

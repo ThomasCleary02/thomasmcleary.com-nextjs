@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllProjects, createProject } from '@/lib/services/project';
+import { ProjectService } from '@/lib/services/project';
 import { CreateProjectRequest } from '@/lib/types/project';
 
+/**
+ * API endpoint for project management
+ * Supports GET (list projects) and POST (create project) operations
+ */
+
+/**
+ * Retrieves all projects
+ * @param {NextRequest} request - The incoming request object
+ * @returns {Promise<NextResponse>} JSON response containing projects array
+ */
 export async function GET(): Promise<NextResponse> {
   try {
-    const projects = await getAllProjects();
+    const projects = await ProjectService.getProjects();
     return NextResponse.json(projects);
   } catch (error) {
     console.error('API Error:', error);
@@ -15,6 +25,11 @@ export async function GET(): Promise<NextResponse> {
   }
 }
 
+/**
+ * Creates a new project
+ * @param {NextRequest} request - The incoming request containing project data
+ * @returns {Promise<NextResponse>} JSON response containing the created project
+ */
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body: CreateProjectRequest = await request.json();
@@ -27,7 +42,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const project = await createProject(body);
+    const project = await ProjectService.createProject(body);
     return NextResponse.json(project, { status: 201 });
   } catch (error) {
     console.error('API Error:', error);

@@ -5,7 +5,25 @@ import { Project } from "@/lib/types/project";
 import ProjectTile from "./ProjectTile";
 import { Loader2, AlertCircle, FolderOpen } from 'lucide-react';
 
-const ProjectList = (): React.JSX.Element => {
+/**
+ * ProjectList component for displaying projects with loading states
+ * Useful for admin panels or other dynamic contexts
+ */
+
+interface ProjectListProps {
+  /** Optional filter function for projects */
+  filterProjects?: (projects: Project[]) => Project[];
+  /** Custom loading message */
+  loadingMessage?: string;
+  /** Custom empty state message */
+  emptyMessage?: string;
+}
+
+const ProjectList = ({ 
+  filterProjects, 
+  loadingMessage = "Loading amazing projects...",
+  emptyMessage = "No projects found"
+}: ProjectListProps): React.JSX.Element => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +38,8 @@ const ProjectList = (): React.JSX.Element => {
         }
         
         const data = await response.json();
-        setProjects(data);
+        const filteredProjects = filterProjects ? filterProjects(data) : data;
+        setProjects(filteredProjects);
         setLoading(false);
       } catch (error) {
         console.error("Fetch error:", error);
@@ -30,14 +49,14 @@ const ProjectList = (): React.JSX.Element => {
     };
 
     fetchProjects();
-  }, []);
+  }, [filterProjects]);
 
   // Loading state
   if (loading) return (
     <div className="flex justify-center items-center py-16">
       <div className="text-center">
         <Loader2 className="w-16 h-16 text-blue-600 dark:text-blue-400 animate-spin mx-auto mb-6" />
-        <div className="text-blue-600 dark:text-blue-400 text-xl font-medium">Loading amazing projects...</div>
+        <div className="text-blue-600 dark:text-blue-400 text-xl font-medium">{loadingMessage}</div>
       </div>
     </div>
   );
@@ -56,7 +75,7 @@ const ProjectList = (): React.JSX.Element => {
     return (
       <div className="text-center py-16">
         <FolderOpen className="w-20 h-20 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-        <div className="text-gray-500 dark:text-gray-400 text-xl font-medium mb-2">No projects yet</div>
+        <div className="text-gray-500 dark:text-gray-400 text-xl font-medium mb-2">{emptyMessage}</div>
         <div className="text-gray-400 dark:text-gray-500">Check back soon for amazing projects!</div>
       </div>
     );

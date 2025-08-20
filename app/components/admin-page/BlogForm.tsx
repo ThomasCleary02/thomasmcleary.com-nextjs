@@ -7,11 +7,23 @@ import { CreateBlogRequest } from '@/lib/types/blog';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+/**
+ * Form component for creating and editing blog posts
+ * Includes markdown preview functionality and form validation
+ */
+
 interface BlogFormProps {
+  /** Function called when the form is submitted */
   onSubmit: (blog: CreateBlogRequest) => Promise<void>;
+  /** Whether the form is currently submitting */
   isSubmitting: boolean;
 }
 
+/**
+ * BlogForm component for creating new blog posts
+ * @param {BlogFormProps} props - Component properties
+ * @returns {JSX.Element} The blog form component
+ */
 export default function BlogForm({ onSubmit, isSubmitting }: BlogFormProps) {
   const [formData, setFormData] = useState<CreateBlogRequest>({
     title: '',

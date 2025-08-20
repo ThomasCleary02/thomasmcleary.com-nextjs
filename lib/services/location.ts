@@ -4,11 +4,25 @@ import { CacheManager } from "../utils/cache";
 const CACHE_TTL_MS = 1000 * 60 * 60; // 1 hour baseline
 const FETCH_TIMEOUT_MS = 3500;       // fail fast; both services are usually sub-second
 
+/**
+ * Service class for location and geolocation operations
+ * Handles visitor location detection and IP-based geolocation with multiple fallback services
+ */
 export class LocationService {
   private cache = CacheManager.getInstance();
-  private loggedOnce = new Set<string>(); // simple log de-dupe per-IP per-runtime
+  private loggedOnce = new Set<string>();
 
-  async getLocationByIp(ip?: string): Promise<LocationData | null> {
+  /**
+   * Retrieves location information for a given IP address
+   * Attempts multiple geolocation services with intelligent fallbacks
+   * @param {string} ip - IP address to geolocate (IPv4 or IPv6)
+   * @returns {Promise<LocationData>} Location information for the IP
+   * @throws {Error} If all geolocation services fail
+   * @example
+   * const location = await locationService.getLocationByIP('8.8.8.8');
+   * console.log(location.city); // "Mountain View"
+   */
+  async getLocationByIP(ip: string): Promise<LocationData> {
     // Must come from API route headers (x-forwarded-for / x-real-ip)
     const rawIp = (ip || "").trim();
     if (!rawIp) {
@@ -134,6 +148,12 @@ export class LocationService {
 
   // --- Helpers --------------------------------------------------------------
 
+  /**
+   * Normalizes IP address by removing brackets, zone indices, and trimming whitespace
+   * @param {string} ip - Raw IP address string
+   * @returns {string} Normalized IP address
+   * @private
+   */
   private normalizeIp(ip: string): string {
     // Common shapes we may get:
     // - "[2001:db8::1]" (IPv6 in brackets) → strip brackets
@@ -146,6 +166,12 @@ export class LocationService {
     return v.toLowerCase();
   }
 
+  /**
+   * Validates IP address format (IPv4 or IPv6)
+   * @param {string} ip - IP address to validate
+   * @returns {boolean} True if IP format is valid
+   * @private
+   */
   private isValidIP(ip: string): boolean {
     // IPv4
     const ipv4 =
@@ -159,6 +185,12 @@ export class LocationService {
     return ipv4.test(ip) || ipv6.test(ip);
   }
 
+  /**
+   * Checks if IP address is local, private, or reserved
+   * @param {string} ip - IP address to check
+   * @returns {boolean} True if IP is local/private/reserved
+   * @private
+   */
   private isLocalOrPrivate(ip: string): boolean {
     // IPv4 private/local/link-local/CGNAT ranges
     if (this.isIPv4(ip)) {
@@ -201,10 +233,23 @@ export class LocationService {
     return false;
   }
 
+  /**
+   * Determines if IP address is IPv4 format
+   * @param {string} ip - IP address to check
+   * @returns {boolean} True if IP is IPv4
+   * @private
+   */
   private isIPv4(ip: string): boolean {
     return ip.includes(".");
   }
 
+  /**
+   * Fetches data from URL with timeout support
+   * @param {string} url - URL to fetch
+   * @param {number} timeoutMs - Timeout in milliseconds
+   * @returns {Promise<Response>} Fetch response
+   * @private
+   */
   private async fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
     const controller = new AbortController();
     const t = setTimeout(() => controller.abort(), timeoutMs);
@@ -215,18 +260,34 @@ export class LocationService {
     }
   }
 
+  /**
+   * Logs a message only once per session to avoid spam
+   * @param {string} key - Unique key for this log message
+   * @private
+   */
   private logOnce(key: string): void {
     if (this.loggedOnce.has(key)) return;
     this.loggedOnce.add(key);
     // Removed console.log to comply with ESLint rules
   }
 
+  /**
+   * Warns about an issue only once per session to avoid spam
+   * @param {string} key - Unique key for this warning
+   * @param {string} msg - Warning message
+   * @private
+   */
   private warnOnce(key: string, msg: string): void {
     if (this.loggedOnce.has(key)) return;
     this.loggedOnce.add(key);
     console.warn(msg);
   }
 
+  /**
+   * Returns default location data when geolocation fails
+   * @returns {LocationData} Default New York location
+   * @private
+   */
   private getDefaultLocation(): LocationData {
     return {
       city: "New York",
@@ -240,4 +301,10 @@ export class LocationService {
   }
 }
 
+/**
+ * Singleton instance of LocationService for application-wide use
+ * @example
+ * import { locationService } from './services/location';
+ * const location = await locationService.getLocationByIP('8.8.8.8');
+ */
 export const locationService = new LocationService();

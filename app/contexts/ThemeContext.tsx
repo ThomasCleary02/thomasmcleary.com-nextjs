@@ -1,17 +1,35 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
 
+/**
+ * Theme context type definition
+ * Provides theme state and toggle functionality
+ */
 interface ThemeContextType {
-  theme: Theme;
+  /** Current theme mode ('light' | 'dark') */
+  theme: 'light' | 'dark';
+  /** Function to toggle between light and dark themes */
   toggleTheme: () => void;
 }
 
+/**
+ * Theme context for managing application theme state
+ * Provides theme switching functionality and persistent theme storage
+ */
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }): React.JSX.Element | null {
+type Theme = 'light' | 'dark';
+
+/**
+ * ThemeContext provider component
+ * Manages theme state and provides theme switching functionality
+ * @param {Object} props - Component properties
+ * @param {React.ReactNode} props.children - Child components
+ * @returns {JSX.Element} Theme context provider
+ */
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
@@ -47,6 +65,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }): Reac
   );
 }
 
+/**
+ * Hook to use the theme context
+ * @returns {ThemeContextType} Theme context with current theme and toggle function
+ * @throws {Error} If used outside of ThemeProvider
+ * @example
+ * const { theme, toggleTheme } = useTheme();
+ * return <button onClick={toggleTheme}>Switch to {theme === 'light' ? 'dark' : 'light'}</button>;
+ */
 export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
   if (context === undefined) {

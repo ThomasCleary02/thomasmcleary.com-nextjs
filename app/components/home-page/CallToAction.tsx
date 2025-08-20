@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
+import { getSocialLinks } from '@/lib/utils/social';
+import { Mail } from 'lucide-react';
 
 export default function CTASec(): React.JSX.Element {
   return (
@@ -26,12 +28,13 @@ export default function CTASec(): React.JSX.Element {
           >
             View My Work
           </Link>
-          <Link 
-            href="mailto:thomas@thomasmcleary.com"
-            className="px-8 py-4 border-2 border-white dark:border-gray-200 text-white dark:text-gray-200 rounded-lg hover:bg-white dark:hover:bg-gray-200 hover:text-blue-600 dark:hover:text-blue-700 transition-all duration-300 font-semibold"
+          <a
+            href={getSocialLinks().email.url}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
+            <Mail className="w-5 h-5" />
             Get In Touch
-          </Link>
+          </a>
         </div>
       </div>
     </section>

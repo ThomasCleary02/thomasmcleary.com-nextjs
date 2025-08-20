@@ -2,46 +2,90 @@
 
 import React, { useState, useEffect } from 'react';
 import { Project, CreateProjectRequest } from '@/lib/types/project';
+import { Blog, CreateBlogRequest } from '@/lib/types/blog';
+import { Bug as BugType } from '@/lib/types/bug';
 import AdminAuth from '../components/admin-page/AdminAuth';
-import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, CheckCircle, AlertCircle } from 'lucide-react';
+import AdminTabs from '../components/admin-page/AdminTabs';
+import ProjectForm from '../components/admin-page/ProjectForm';
+import ProjectList from '../components/admin-page/ProjectList';
 import BlogForm from '../components/admin-page/BlogForm';
 import BlogList from '../components/admin-page/BlogList';
-import ProjectForm from '../components/admin-page/ProjectForm';
-import { Blog, CreateBlogRequest, UpdateBlogRequest } from '@/lib/types/blog';
-import ProjectList from '../components/admin-page/ProjectList';
-import BlogEditForm from '../components/admin-page/BlogEditForm';
+import BugList from '../components/admin-page/BugList';
+import { motion, AnimatePresence } from 'framer-motion';
+import { LogOut, CheckCircle, AlertCircle, FolderOpen, BookOpen, Bug } from 'lucide-react';
 
 export default function AdminDashboard(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<'projects' | 'blogs' | 'bugs'>('projects');
+  
+  // Projects state
   const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<'projects' | 'blogs'>('projects');
+  
+  // Blogs state
   const [blogs, setBlogs] = useState<Blog[]>([]);
-
   const [isSubmittingBlog, setIsSubmittingBlog] = useState(false);
-  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
-  const [isEditingBlog, setIsEditingBlog] = useState(false);
+  
+  // Bugs state
+  const [bugs, setBugs] = useState<BugType[]>([]);
+  
+  // General state
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  useEffect((): void => {
-    // Check if already authenticated
-    const authStatus = sessionStorage.getItem('adminAuth');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-    }
+  // Tab configuration
+  const tabs = [
+    { id: 'projects', label: 'Projects', icon: <FolderOpen className="h-4 w-4" /> },
+    { id: 'blogs', label: 'Blogs', icon: <BookOpen className="h-4 w-4" /> },
+    { id: 'bugs', label: 'Bugs', icon: <Bug className="h-4 w-4" /> }
+  ];
+
+  useEffect(() => {
+    checkAuthStatus();
   }, []);
 
-  useEffect((): void => {
+  const checkAuthStatus = async () => {
+    try {
+      // Check if we have a valid admin token
+      const response = await fetch('/api/admin/verify', { 
+        method: 'GET',
+        credentials: 'include' // Include cookies
+      });
+      
+      if (response.ok) {
+        setIsAuthenticated(true);
+        fetchAllData();
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (isAuthenticated) {
-      fetchProjects();
-      fetchBlogs();
+      fetchAllData();
     }
   }, [isAuthenticated]);
 
-  const fetchProjects = async (): Promise<void> => {
+  const fetchAllData = async (): Promise<void> => {
+    try {
+      await Promise.all([
+        fetchProjects(),
+        fetchBlogs(),
+        fetchBugs()
+      ]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Project functions
+  const fetchProjects = async () => {
     try {
       const response = await fetch('/api/projects');
       if (!response.ok) throw new Error('Failed to fetch projects');
@@ -49,13 +93,10 @@ export default function AdminDashboard(): React.JSX.Element {
       setProjects(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
-      setMessage({ type: 'error', text: 'Failed to fetch projects' });
-    } finally {
-      setLoading(false);
     }
   };
 
-    const handleSubmit = async (projectData: CreateProjectRequest): Promise<void> => {
+  const handleProjectSubmit = async (projectData: CreateProjectRequest) => {
     setIsSubmitting(true);
     setMessage(null);
     
@@ -81,11 +122,7 @@ export default function AdminDashboard(): React.JSX.Element {
     }
   };
 
-
-
-
-
-  const deleteProject = async (id: string): Promise<void> => {
+  const deleteProject = async (id: string) => {
     if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
       return;
     }
@@ -104,22 +141,15 @@ export default function AdminDashboard(): React.JSX.Element {
     }
   };
 
-  const handleLogout = (): void => {
-    sessionStorage.removeItem('adminAuth');
-    setIsAuthenticated(false);
-    setProjects([]);
-    setLoading(true);
-  };
-
+  // Blog functions
   const fetchBlogs = async () => {
     try {
-      const response = await fetch('/api/blogs?admin=true'); // Add admin flag
+      const response = await fetch('/api/blogs?admin=true');
       if (!response.ok) throw new Error('Failed to fetch blogs');
       const data = await response.json();
       setBlogs(data);
     } catch (error) {
       console.error('Error fetching blogs:', error);
-      setMessage({ type: 'error', text: 'Failed to fetch blogs' });
     }
   };
 
@@ -168,33 +198,64 @@ export default function AdminDashboard(): React.JSX.Element {
     }
   };
 
-  const handleEditBlog = async (id: string, updates: UpdateBlogRequest) => {
-    setIsEditingBlog(true);
+  // Bug functions
+  const fetchBugs = async () => {
     try {
-      const response = await fetch(`/api/blogs/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates),
-      });
-
-      if (response.ok) {
-        const updatedBlog = await response.json();
-        setBlogs(blogs.map(b => b.id === id ? updatedBlog : b));
-        setEditingBlog(null);
-        setMessage({ type: 'success', text: 'Blog post updated successfully!' });
-      } else {
-        throw new Error('Failed to update blog post');
-      }
+      const response = await fetch('/api/bugs?admin=true');
+      if (!response.ok) throw new Error('Failed to fetch bugs');
+      const data = await response.json();
+      setBugs(data);
     } catch (error) {
-      console.error('Error updating blog post:', error);
-      setMessage({ type: 'error', text: 'Failed to update blog post' });
-    } finally {
-      setIsEditingBlog(false);
+      console.error('Error fetching bugs:', error);
     }
   };
 
-  const startEditBlog = (blog: Blog) => {
-    setEditingBlog(blog);
+  const deleteBug = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this bug report? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/bugs/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        setBugs(bugs.filter(b => b.id !== id));
+        setMessage({ type: 'success', text: 'Bug report deleted successfully!' });
+      } else {
+        throw new Error('Failed to delete bug report');
+      }
+    } catch (error) {
+      console.error('Error deleting bug report:', error);
+      setMessage({ type: 'error', text: 'Failed to delete bug report' });
+    }
+  };
+
+  const handleBugEdit = (bug: BugType) => {
+    // TODO: Implement bug editing
+    console.log('Edit bug:', bug);
+  };
+
+  const handleBugStatusUpdate = async (id: string, status: BugType['status'], notes?: string) => {
+    // TODO: Implement bug status update
+    console.log('Update bug status:', { id, status, notes });
+  };
+
+  // Update the logout function
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', { 
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear local state
+      setIsAuthenticated(false);
+      setProjects([]);
+      setBlogs([]);
+      setBugs([]);
+      setLoading(true);
+    }
   };
 
   if (!isAuthenticated) {
@@ -225,39 +286,20 @@ export default function AdminDashboard(): React.JSX.Element {
             Admin Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-lg">
-            Manage your portfolio projects and keep your showcase up to date.
+            Manage your portfolio projects, blog posts, and bug reports.
           </p>
         </motion.div>
 
-        {/* Tab Selection */}
-        <div className="flex justify-center mb-8">
-          <div className="bg-white/50 dark:bg-gray-800/50 rounded-xl p-1 backdrop-blur-sm">
-            <button
-              onClick={() => setActiveTab('projects')}
-              className={`px-6 py-2 rounded-full transition-all duration-200 ${
-                activeTab === 'projects' 
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/50'
-              }`}
-            >
-              Projects
-            </button>
-            <button
-              onClick={() => setActiveTab('blogs')}
-              className={`px-6 py-2 rounded-full transition-all duration-200 ${
-                activeTab === 'blogs' 
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700/50'
-              }`}
-            >
-              Blogs
-            </button>
-          </div>
-        </div>
+        {/* Tab Navigation */}
+        <AdminTabs 
+          activeTab={activeTab} 
+          onTabChange={(tab) => setActiveTab(tab as 'projects' | 'blogs' | 'bugs')} 
+          tabs={tabs}
+        />
 
         {/* Message Display */}
         <AnimatePresence>
-          {message && activeTab === 'projects' && (
+          {message && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -265,7 +307,7 @@ export default function AdminDashboard(): React.JSX.Element {
               className={`mb-8 p-4 rounded-xl flex items-center gap-3 ${
                 message.type === 'success' 
                   ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800' 
-                  : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-green-800'
+                  : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800'
               }`}
             >
               {message.type === 'success' ? <CheckCircle className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
@@ -275,27 +317,31 @@ export default function AdminDashboard(): React.JSX.Element {
         </AnimatePresence>
 
         {/* Content Based on Active Tab */}
-        {activeTab === 'projects' ? (
+        {activeTab === 'projects' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <ProjectForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
-            <ProjectList projects={projects} onDelete={deleteProject} />
+            <ProjectForm onSubmit={handleProjectSubmit} isSubmitting={isSubmitting} />
+            <ProjectList 
+              projects={projects} 
+              onDelete={deleteProject}
+            />
           </div>
-        ) : (
+        )}
+
+        {activeTab === 'blogs' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <BlogForm onSubmit={handleBlogSubmit} isSubmitting={isSubmittingBlog} />
-            <BlogList 
-              blogs={blogs} 
-              onDelete={deleteBlog} 
-              onEdit={startEditBlog} 
+            <BlogList blogs={blogs} onDelete={deleteBlog} onEdit={() => {}} />
+          </div>
+        )}
+
+        {activeTab === 'bugs' && (
+          <div className="grid grid-cols-1 gap-8">
+            <BugList 
+              bugs={bugs} 
+              onDelete={deleteBug} 
+              onEdit={handleBugEdit}
+              onStatusUpdate={handleBugStatusUpdate}
             />
-            {editingBlog && (
-              <BlogEditForm
-                blog={editingBlog}
-                onSubmit={handleEditBlog}
-                onCancel={() => setEditingBlog(null)}
-                isSubmitting={isEditingBlog}
-              />
-            )}
           </div>
         )}
 

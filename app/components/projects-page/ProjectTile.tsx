@@ -6,11 +6,22 @@ import { Project } from '@/lib/types/project';
 import { ExternalLink, Github, Code } from 'lucide-react';
 import Image from 'next/image';
 
+/**
+ * Project tile component for displaying project information
+ * Shows project details in a card format with hover effects and modal expansion
+ */
+
 interface ProjectTileProps {
+  /** Project data to display */
   project: Project;
 }
 
-const ProjectTile = ({ project }: ProjectTileProps): React.JSX.Element => {
+/**
+ * ProjectTile component for displaying individual projects
+ * @param {ProjectTileProps} props - Component properties
+ * @returns {JSX.Element} The project tile component
+ */
+export default function ProjectTile({ project }: ProjectTileProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -191,6 +202,4 @@ const ProjectTile = ({ project }: ProjectTileProps): React.JSX.Element => {
       </AnimatePresence>
     </>
   );
-};
-
-export default ProjectTile;
+}
