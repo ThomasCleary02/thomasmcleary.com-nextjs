@@ -41,13 +41,13 @@ export async function POST(request: NextRequest) {
     // Generate JWT token
     const token = AuthService.generateToken(username);
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie with matching expiration
     const response = NextResponse.json({ success: true });
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 24 * 60 * 60, // 24 hours
+      maxAge: 8 * 60 * 60, // 8 hours to match JWT_EXPIRES_IN
       path: '/'
     });
 

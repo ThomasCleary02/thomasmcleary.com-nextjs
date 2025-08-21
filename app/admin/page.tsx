@@ -11,6 +11,7 @@ import ProjectList from '../components/admin-page/ProjectList';
 import BlogForm from '../components/admin-page/BlogForm';
 import BlogList from '../components/admin-page/BlogList';
 import BugList from '../components/admin-page/BugList';
+import BugEditForm from '../components/admin-page/BugEditForm';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogOut, CheckCircle, AlertCircle, FolderOpen, BookOpen, Bug } from 'lucide-react';
 
@@ -37,7 +38,7 @@ export default function AdminDashboard(): React.JSX.Element {
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
   // Add this state for editing bugs (around line 30 with other state variables)
-  const [_editingBug, setEditingBug] = useState<BugType | null>(null);
+  const [editingBug, setEditingBug] = useState<BugType | null>(null);
 
   // Add this state for editing projects (around line 30 with other state variables)
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -240,7 +241,6 @@ export default function AdminDashboard(): React.JSX.Element {
 
   // Implement proper bug editing
   const handleBugEdit = async (bug: BugType) => {
-    // TODO: Implement proper bug editing modal/form
     setEditingBug(bug);
     setActiveTab('bugs');
   };
@@ -469,12 +469,20 @@ export default function AdminDashboard(): React.JSX.Element {
 
         {activeTab === 'bugs' && (
           <div className="grid grid-cols-1 gap-8">
-            <BugList 
-              bugs={bugs} 
-              onDelete={deleteBug} 
-              onEdit={handleBugEdit}
-              onStatusUpdate={handleBugStatusUpdate}
-            />
+            {editingBug ? (
+              <BugEditForm
+                bug={editingBug}
+                onSave={(id, updates) => handleBugStatusUpdate(id, updates.status!, updates.admin_notes)}
+                onCancel={() => setEditingBug(null)}
+              />
+            ) : (
+              <BugList 
+                bugs={bugs} 
+                onDelete={deleteBug} 
+                onEdit={handleBugEdit}
+                onStatusUpdate={handleBugStatusUpdate}
+              />
+            )}
           </div>
         )}
 
