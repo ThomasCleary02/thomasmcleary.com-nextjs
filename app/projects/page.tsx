@@ -5,6 +5,13 @@ import { Project } from '@/lib/types/project';
 
 export default async function ProjectsPage() {
   const projects = await ProjectService.getProjects();
+  
+  // Sort projects: featured first, then by creation date
+  const sortedProjects = projects.sort((a, b) => {
+    if (a.featured_project && !b.featured_project) return -1;
+    if (!a.featured_project && b.featured_project) return 1;
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 py-24">
@@ -20,7 +27,7 @@ export default async function ProjectsPage() {
         </div>
         
         {/* Projects Grid */}
-        {projects.length === 0 ? (
+        {sortedProjects.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-gray-400 dark:text-gray-500 text-6xl mb-4">📁</div>
             <div className="text-gray-500 dark:text-gray-400 text-xl font-medium mb-2">No projects yet</div>
@@ -28,7 +35,7 @@ export default async function ProjectsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {projects.map((project: Project, index: number) => (
+            {sortedProjects.map((project: Project, index: number) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
           </div>

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Project } from '@/lib/types/project';
 import { Github, Code, Play, Bot, Database, Globe, BookOpen } from 'lucide-react';
 import SetupInstructionsModal from './SetupInstructionsModal';
+import ApiDemoModal from './ApiDemoModal';
 
 interface ProjectCardProps {
   project: Project;
@@ -16,6 +17,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
   const [showInfoModal, setShowInfoModal] = useState(false);
   // Add state for showing all technologies
   const [showAllTechnologies, setShowAllTechnologies] = useState(false);
+  const [showApiDemoModal, setShowApiDemoModal] = useState(false);
 
   const getDemoIcon = (demoType: string) => {
     switch (demoType) {
@@ -64,9 +66,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            onClick={() => {
-              alert('API demo coming soon!');
-            }}
+            onClick={() => setShowApiDemoModal(true)}
           >
             <Database className="h-4 w-4" />
             Try API
@@ -100,7 +100,7 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
       >
         {/* Project Icon/Image */}
-        <div className="h-32 bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
+        <div className="h-32 bg-gradient-to-br from-blue-100 via-blue-50 to-blue-200 dark:from-gray-700 dark:via-gray-800 dark:to-gray-700 flex items-center justify-center border-b border-gray-200 dark:border-gray-600">
           {project.image_url ? (
             <img
               src={project.image_url}
@@ -108,7 +108,9 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               className="h-20 w-20 object-contain rounded-lg"
             />
           ) : (
-            getDemoIcon(project.demo_type || 'none')
+            <div className="text-blue-600 dark:text-blue-400">
+              {getDemoIcon(project.demo_type || 'none')}
+            </div>
           )}
         </div>
 
@@ -217,7 +219,10 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       {/* Setup Instructions Modal */}
       <SetupInstructionsModal
         isOpen={showSetupModal}
-        onClose={() => setShowSetupModal(false)}
+        onClose={() => {
+          setShowSetupModal(false);
+          // Reset any modal-specific states if needed
+        }}
         project={project}
         showType="setup"
       />
@@ -225,9 +230,22 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       {/* Info Modal for inactive projects */}
       <SetupInstructionsModal
         isOpen={showInfoModal}
-        onClose={() => setShowInfoModal(false)}
+        onClose={() => {
+          setShowInfoModal(false);
+          // Reset any modal-specific states if needed
+        }}
         project={project}
         showType="info"
+      />
+
+      {/* API Demo Modal */}
+      <ApiDemoModal
+        isOpen={showApiDemoModal}
+        onClose={() => {
+          setShowApiDemoModal(false);
+          // Reset any modal-specific states if needed
+        }}
+        project={project}
       />
     </>
   );
