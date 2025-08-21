@@ -21,16 +21,16 @@ export default function CTASec(): React.JSX.Element {
           Let&apos;s collaborate on your next project. Whether you need a full-stack application, 
           website redesign, or technical consultation, I&apos;m here to help bring your ideas to life.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link 
             href="/projects"
-            className="px-8 py-4 bg-white dark:bg-gray-100 text-blue-600 dark:text-blue-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-200 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-100 text-blue-600 dark:text-blue-700 rounded-lg hover:bg-blue-50 dark:hover:bg-gray-200 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-center"
           >
             View My Work
           </Link>
           <a
             href={getSocialLinks().email.url}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             <Mail className="w-5 h-5" />
             Get In Touch

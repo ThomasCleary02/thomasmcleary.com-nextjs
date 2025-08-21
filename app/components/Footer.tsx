@@ -24,7 +24,7 @@ export default function Footer(): React.JSX.Element {
       <div className="max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About Section */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Thomas Cleary</h3>
             <p className="text-gray-400 text-sm">
               Full-stack software engineer passionate about building innovative solutions.
@@ -32,7 +32,7 @@ export default function Footer(): React.JSX.Element {
           </div>
           
           {/* Quick Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
@@ -43,7 +43,7 @@ export default function Footer(): React.JSX.Element {
           </div>
           
           {/* Social Links */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Connect</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               {Object.entries(getSocialLinks()).map(([key, link]) => (

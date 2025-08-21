@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Eye, EyeOff } from 'lucide-react';
-import { CreateBlogRequest } from '@/lib/types/blog';
+import { Blog, CreateBlogRequest } from '@/lib/types/blog';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -17,6 +17,10 @@ interface BlogFormProps {
   onSubmit: (blog: CreateBlogRequest) => Promise<void>;
   /** Whether the form is currently submitting */
   isSubmitting: boolean;
+  /** Blog to edit (if editing) */
+  editingBlog?: Blog | null;
+  /** Function to cancel editing */
+  onCancel?: () => void;
 }
 
 /**
@@ -24,22 +28,51 @@ interface BlogFormProps {
  * @param {BlogFormProps} props - Component properties
  * @returns {JSX.Element} The blog form component
  */
-export default function BlogForm({ onSubmit, isSubmitting }: BlogFormProps) {
+export default function BlogForm({ onSubmit, isSubmitting, editingBlog, onCancel }: BlogFormProps) {
   const [formData, setFormData] = useState<CreateBlogRequest>({
-    title: '',
-    subtitle: '',
-    thumbnail_url: '',
-    body: '',
-    status: 'draft'
+    title: editingBlog?.title || '',
+    subtitle: editingBlog?.subtitle || '',
+    thumbnail_url: editingBlog?.thumbnail_url || '',
+    body: editingBlog?.body || '',
+    status: editingBlog?.status || 'draft'
   });
   const [showPreview, setShowPreview] = useState(false);
+
+  // Update form data when editingBlog changes
+  React.useEffect(() => {
+    if (editingBlog) {
+      setFormData({
+        title: editingBlog.title,
+        subtitle: editingBlog.subtitle || '',
+        thumbnail_url: editingBlog.thumbnail_url || '',
+        body: editingBlog.body || '',
+        status: editingBlog.status
+      });
+    }
+  }, [editingBlog]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await onSubmit(formData);
-    setFormData({ title: '', subtitle: '', thumbnail_url: '', body: '', status: 'draft' });
+    if (!editingBlog) {
+      setFormData({ title: '', subtitle: '', thumbnail_url: '', body: '', status: 'draft' });
+    }
   };
 
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    } else if (editingBlog) {
+      // Reset to original values
+      setFormData({
+        title: editingBlog.title,
+        subtitle: editingBlog.subtitle || '',
+        thumbnail_url: editingBlog.thumbnail_url,
+        body: editingBlog.body,
+        status: editingBlog.status
+      });
+    }
+  };
 
   return (
     <motion.div 
@@ -50,7 +83,7 @@ export default function BlogForm({ onSubmit, isSubmitting }: BlogFormProps) {
     >
       <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-6 flex items-center gap-2">
         <Plus className="h-6 w-6" />
-        Add New Blog Post
+        {editingBlog ? 'Edit Blog Post' : 'Add New Blog Post'}
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -202,15 +235,31 @@ export default function BlogForm({ onSubmit, isSubmitting }: BlogFormProps) {
           )}
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-blue-600 dark:bg-blue-500 text-white py-4 px-6 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg shadow-lg"
-        >
-          {isSubmitting ? 'Adding Blog Post...' : 'Add Blog Post'}
-        </motion.button>
+        <div className="flex gap-4">
+          {editingBlog && onCancel && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="button"
+              onClick={handleCancel}
+              className="flex-1 bg-gray-500 dark:bg-gray-600 text-white py-4 px-6 rounded-xl hover:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-200 font-semibold text-lg shadow-lg"
+            >
+              Cancel
+            </motion.button>
+          )}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit"
+            disabled={isSubmitting}
+            className={`${editingBlog && onCancel ? 'flex-1' : 'w-full'} bg-blue-600 dark:bg-blue-500 text-white py-4 px-6 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg shadow-lg`}
+          >
+            {isSubmitting 
+              ? (editingBlog ? 'Updating...' : 'Adding Blog Post...') 
+              : (editingBlog ? 'Update Blog Post' : 'Add Blog Post')
+            }
+          </motion.button>
+        </div>
       </form>
     </motion.div>
   );

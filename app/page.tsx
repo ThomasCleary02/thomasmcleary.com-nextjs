@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
 import React from 'react';
 import Hero from './components/home-page/Hero';
-import GreetingSection from './components/home-page/GreetingSection';
+import IntroSection from './components/home-page/IntroSection';
 import CTASec from './components/home-page/CallToAction';
-import { GreetingService } from '@/lib/services/greeting';
 
 export const metadata: Metadata = {
   title: 'Thomas Cleary - Software Engineer',
@@ -20,14 +19,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage(): Promise<React.JSX.Element> {
-  // Fetch greeting data on the server
-  const greetingService = new GreetingService();
-  const greetingData = await greetingService.getGreetingData();
-  
   return (
     <div className="min-h-screen">
       <Hero />
-      <GreetingSection greetingData={greetingData} />
+      <IntroSection />
       <CTASec />
     </div>
   );

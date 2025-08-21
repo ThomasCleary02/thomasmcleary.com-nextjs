@@ -456,7 +456,9 @@ export default function AdminDashboard(): React.JSX.Element {
             {editingBlog ? (
               <BlogForm 
                 onSubmit={handleBlogUpdate} 
-                isSubmitting={isSubmittingBlog} 
+                isSubmitting={isSubmittingBlog}
+                editingBlog={editingBlog}
+                onCancel={() => setEditingBlog(null)}
               />
             ) : (
               <BlogForm onSubmit={handleBlogSubmit} isSubmitting={isSubmittingBlog} />

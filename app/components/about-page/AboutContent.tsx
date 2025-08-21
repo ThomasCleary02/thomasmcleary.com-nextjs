@@ -48,15 +48,11 @@ export default function AboutContent(): React.JSX.Element {
             whileInView={{ opacity: 1, x: 0, rotate: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative flex justify-center lg:justify-end"
           >
-            {/* Enhanced floating elements */}
-            <div className="absolute -top-4 -right-4 w-full h-96 lg:h-[500px] bg-gradient-to-br from-blue-400/30 to-purple-400/30 dark:from-blue-600/30 dark:to-purple-600/30 rounded-2xl rotate-6 animate-pulse"></div>
-            <div className="absolute -top-2 -right-2 w-full h-96 lg:h-[500px] bg-gradient-to-br from-purple-400/20 to-pink-400/20 dark:from-purple-600/20 dark:to-pink-600/20 rounded-2xl rotate-3 animate-pulse" style={{animationDelay: '1s'}}></div>
-            <div className="absolute -top-6 -right-6 w-full h-96 lg:h-[500px] bg-gradient-to-br from-green-400/20 to-blue-400/20 dark:from-green-600/20 dark:to-blue-600/20 rounded-2xl rotate-12 animate-pulse" style={{animationDelay: '2s'}}></div>
-            
+            {/* Enhanced floating elements - removed background gradients that were causing spacing issues */}
             <motion.div 
-              className="relative w-full h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl"
+              className="relative w-full max-w-md h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl"
               whileHover={{ scale: 1.02, rotate: 1 }}
               transition={{ duration: 0.3 }}
             >
