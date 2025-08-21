@@ -1,4 +1,5 @@
 import { supabase } from '../supabase';
+import { supabaseAdmin } from '../supabase-server';
 import { Project, CreateProjectRequest, UpdateProjectRequest } from '../types/project';
 
 /**
@@ -7,19 +8,13 @@ import { Project, CreateProjectRequest, UpdateProjectRequest } from '../types/pr
  */
 export class ProjectService {
   /**
-   * Creates a new project in the database
+   * Creates a new project in the database (admin only)
    * @param {CreateProjectRequest} project - Project data to create
    * @returns {Promise<Project>} The created project
    * @throws {Error} If project creation fails
-   * @example
-   * const newProject = await ProjectService.createProject({
-   *   title: "My App",
-   *   description: "A mobile application",
-   *   technologies: ["React Native", "Expo"]
-   * });
    */
   static async createProject(project: CreateProjectRequest): Promise<Project> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('projects')
       .insert([project])
       .select()
@@ -34,7 +29,7 @@ export class ProjectService {
   }
 
   /**
-   * Retrieves all projects from the database
+   * Retrieves all projects from the database (public read)
    * @returns {Promise<Project[]>} Array of all projects
    * @throws {Error} If database query fails
    */
@@ -53,7 +48,7 @@ export class ProjectService {
   }
 
   /**
-   * Retrieves a project by its unique identifier
+   * Retrieves a project by its unique identifier (public read)
    * @param {string} id - Project ID
    * @returns {Promise<Project | null>} Project or null if not found
    * @throws {Error} If database query fails
@@ -78,14 +73,14 @@ export class ProjectService {
   }
 
   /**
-   * Updates an existing project
+   * Updates an existing project (admin only)
    * @param {string} id - Project ID to update
    * @param {UpdateProjectRequest} updates - Project data to update
    * @returns {Promise<Project>} The updated project
    * @throws {Error} If update fails
    */
   static async updateProject(id: string, updates: UpdateProjectRequest): Promise<Project> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('projects')
       .update(updates)
       .eq('id', id)
@@ -101,13 +96,13 @@ export class ProjectService {
   }
 
   /**
-   * Deletes a project from the database
+   * Deletes a project from the database (admin only)
    * @param {string} id - Project ID to delete
    * @returns {Promise<void>} Success confirmation
    * @throws {Error} If deletion fails
    */
   static async deleteProject(id: string): Promise<void> {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('projects')
       .delete()
       .eq('id', id);

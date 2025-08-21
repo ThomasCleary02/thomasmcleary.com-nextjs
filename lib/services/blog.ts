@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-server";
 import { Blog, CreateBlogRequest, UpdateBlogRequest } from "@/lib/types/blog";
 
 /**
@@ -8,7 +9,7 @@ import { Blog, CreateBlogRequest, UpdateBlogRequest } from "@/lib/types/blog";
 export class BlogService {
 
     /**
-     * Creates a new blog post
+     * Creates a new blog post (admin only)
      * @param {CreateBlogRequest} blog - The blog data to create
      * @returns {Promise<Blog>} The created blog post
      * @throws {Error} If the blog creation fails
@@ -25,7 +26,7 @@ export class BlogService {
             
             console.log('Processed blog data:', blogData);
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('blogs')
                 .insert([blogData])
                 .select()
@@ -53,7 +54,7 @@ export class BlogService {
         try {
             console.log('Fetching all blogs...');
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('blogs')
                 .select('*')
                 .order('created_at', { ascending: false });
@@ -72,7 +73,7 @@ export class BlogService {
     }
 
     /**
-     * Retrieves published blog posts for public display
+     * Retrieves published blog posts for public display (public read)
      * @param {number} page - Page number for pagination (1-based)
      * @param {number} limit - Number of posts per page
      * @returns {Promise<Blog[]>} Array of published blog posts
@@ -137,7 +138,7 @@ export class BlogService {
     }
 
     /**
-     * Retrieves a blog post by its slug
+     * Retrieves a blog post by its slug (public read)
      * @param {string} slug - URL-friendly identifier
      * @returns {Promise<Blog | null>} Blog post or null if not found
      * @throws {Error} If the database query fails
@@ -167,7 +168,7 @@ export class BlogService {
     }
 
     /**
-     * Updates an existing blog post
+     * Updates an existing blog post (admin only)
      * @param {string} slug - Blog slug to update
      * @param {UpdateBlogRequest} updates - Blog data to update
      * @returns {Promise<Blog>} The updated blog post
@@ -177,7 +178,7 @@ export class BlogService {
         try {
             console.log(`Updating blog: ${slug}`);
             
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from('blogs')
                 .update(updates)
                 .eq('slug', slug)
@@ -198,7 +199,7 @@ export class BlogService {
     }
 
     /**
-     * Deletes a blog post
+     * Deletes a blog post (admin only)
      * @param {string} slug - Blog slug to delete
      * @returns {Promise<void>} Success confirmation
      * @throws {Error} If deletion fails
@@ -207,7 +208,7 @@ export class BlogService {
         try {
             console.log(`Deleting blog: ${slug}`);
             
-            const { error } = await supabase
+            const { error } = await supabaseAdmin
                 .from('blogs')
                 .delete()
                 .eq('slug', slug);

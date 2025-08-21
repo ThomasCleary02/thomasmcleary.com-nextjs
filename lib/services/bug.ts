@@ -1,4 +1,5 @@
 import { supabase } from '../supabase';
+import { supabaseAdmin } from '../supabase-server';
 import { Bug, CreateBugRequest, UpdateBugRequest } from '../types/bug';
 
 /**
@@ -7,7 +8,7 @@ import { Bug, CreateBugRequest, UpdateBugRequest } from '../types/bug';
  */
 export class BugService {
   /**
-   * Creates a new bug report
+   * Creates a new bug report (public create)
    * @param {CreateBugRequest} bug - Bug report data to create
    * @returns {Promise<Bug>} The created bug report
    * @throws {Error} If bug report creation fails
@@ -29,7 +30,7 @@ export class BugService {
    * @throws {Error} If database query fails
    */
   static async getAllBugs(): Promise<Bug[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('bugs')
       .select('*')
       .order('created_at', { ascending: false });
@@ -39,14 +40,14 @@ export class BugService {
   }
 
   /**
-   * Updates a bug report status
+   * Updates a bug report status (admin only)
    * @param {string} id - Bug report ID to update
    * @param {UpdateBugRequest} updates - Bug data to update
    * @returns {Promise<Bug>} The updated bug report
    * @throws {Error} If update fails
    */
   static async updateBug(id: string, updates: UpdateBugRequest): Promise<Bug> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('bugs')
       .update(updates)
       .eq('id', id)
@@ -58,13 +59,13 @@ export class BugService {
   }
 
   /**
-   * Deletes a bug report
+   * Deletes a bug report (admin only)
    * @param {string} id - Bug report ID to delete
    * @returns {Promise<void>} Success confirmation
    * @throws {Error} If deletion fails
    */
   static async deleteBug(id: string): Promise<void> {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('bugs')
       .delete()
       .eq('id', id);
