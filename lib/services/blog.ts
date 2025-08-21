@@ -12,16 +12,9 @@ export class BlogService {
      * @param {CreateBlogRequest} blog - The blog data to create
      * @returns {Promise<Blog>} The created blog post
      * @throws {Error} If the blog creation fails
-     * @example
-     * const newBlog = await BlogService.createBlog({
-     *   title: "My New Post",
-     *   body: "# Hello World\nThis is my first post",
-     *   status: "draft"
-     * });
      */
     static async createBlog(blog: CreateBlogRequest): Promise<Blog> {
         try {
-            // Add logging
             console.log('Creating blog with data:', blog);
             
             const blogData = {
@@ -30,7 +23,7 @@ export class BlogService {
                 published_at: blog.published_at || (blog.status === 'published' ? new Date().toISOString() : null)
             };
             
-            console.warn('Processed blog data:', blogData);
+            console.log('Processed blog data:', blogData);
             
             const { data, error } = await supabase
                 .from('blogs')
@@ -43,7 +36,7 @@ export class BlogService {
                 throw error;
             }
             
-            console.warn('Blog created successfully:', data);
+            console.log('Blog created successfully:', data);
             return data;
         } catch (error) {
             console.error('Service error:', error);
@@ -57,13 +50,25 @@ export class BlogService {
      * @throws {Error} If the database query fails
      */
     static async getAllBlogs(): Promise<Blog[]> {
-        const { data, error } = await supabase
-            .from('blogs')
-            .select('*')
-            .order('created_at', { ascending: false });
+        try {
+            console.log('Fetching all blogs...');
+            
+            const { data, error } = await supabase
+                .from('blogs')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        return data || [];
+            if (error) {
+                console.error('Error fetching all blogs:', error);
+                throw error;
+            }
+            
+            console.log(`Fetched ${data?.length || 0} blogs`);
+            return data || [];
+        } catch (error) {
+            console.error('getAllBlogs error:', error);
+            throw error;
+        }
     }
 
     /**
@@ -75,6 +80,22 @@ export class BlogService {
      */
     static async getPublishedBlogs(page: number = 1, limit: number = 10): Promise<Blog[]> {
         try {
+            console.log(`Fetching published blogs: page ${page}, limit ${limit}`);
+            
+            // First, try to get the total count to verify we can access the table
+            const { count, error: countError } = await supabase
+                .from('blogs')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'published');
+            
+            if (countError) {
+                console.error('Error getting blog count:', countError);
+                throw countError;
+            }
+            
+            console.log(`Total published blogs in database: ${count}`);
+            
+            // Now fetch the actual blogs
             const { data, error } = await supabase
                 .from('blogs')
                 .select('*')
@@ -82,11 +103,36 @@ export class BlogService {
                 .order('published_at', { ascending: false })
                 .range((page - 1) * limit, page * limit - 1);
 
-            if (error) throw error;
+            if (error) {
+                console.error('Error fetching published blogs:', error);
+                throw error;
+            }
+            
+            console.log(`Successfully fetched ${data?.length || 0} published blogs`);
             return data || [];
         } catch (error) {
-            // Silent failure - return empty array instead of logging
-            return [];
+            console.error('getPublishedBlogs error:', error);
+            
+            // Fallback: try to get all blogs and filter client-side
+            try {
+                console.log('Attempting fallback: fetching all blogs...');
+                const { data: allBlogs, error: fallbackError } = await supabase
+                    .from('blogs')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
+                    return [];
+                }
+
+                const publishedBlogs = allBlogs?.filter(blog => blog.status === 'published') || [];
+                console.log(`Fallback successful: found ${publishedBlogs.length} published blogs`);
+                return publishedBlogs;
+            } catch (fallbackError) {
+                console.error('All attempts failed:', fallbackError);
+                return [];
+            }
         }
     }
 
@@ -97,15 +143,27 @@ export class BlogService {
      * @throws {Error} If the database query fails
      */
     static async getBlogBySlug(slug: string): Promise<Blog | null> {
-        const { data, error } = await supabase
-            .from('blogs')
-            .select('*')
-            .eq('slug', slug)
-            .eq('status', 'published')
-            .single();
+        try {
+            console.log(`Fetching blog by slug: ${slug}`);
+            
+            const { data, error } = await supabase
+                .from('blogs')
+                .select('*')
+                .eq('slug', slug)
+                .eq('status', 'published')
+                .single();
 
-        if (error) throw error;
-        return data;
+            if (error) {
+                console.error(`Error fetching blog by slug ${slug}:`, error);
+                throw error;
+            }
+            
+            console.log(`Blog found: ${data?.title}`);
+            return data;
+        } catch (error) {
+            console.error(`getBlogBySlug error for ${slug}:`, error);
+            return null;
+        }
     }
 
     /**
@@ -116,15 +174,27 @@ export class BlogService {
      * @throws {Error} If update fails
      */
     static async updateBlog(slug: string, updates: UpdateBlogRequest): Promise<Blog> {
-        const { data, error } = await supabase  // Use regular supabase client
-            .from('blogs')
-            .update(updates)
-            .eq('slug', slug)
-            .select()
-            .single();
+        try {
+            console.log(`Updating blog: ${slug}`);
+            
+            const { data, error } = await supabase
+                .from('blogs')
+                .update(updates)
+                .eq('slug', slug)
+                .select()
+                .single();
 
-        if (error) throw error;
-        return data;
+            if (error) {
+                console.error(`Error updating blog ${slug}:`, error);
+                throw error;
+            }
+            
+            console.log(`Blog updated successfully: ${data?.title}`);
+            return data;
+        } catch (error) {
+            console.error(`updateBlog error for ${slug}:`, error);
+            throw error;
+        }
     }
 
     /**
@@ -134,12 +204,24 @@ export class BlogService {
      * @throws {Error} If deletion fails
      */
     static async deleteBlog(slug: string): Promise<void> {
-        const { error } = await supabase
-            .from('blogs')
-            .delete()
-            .eq('slug', slug);
+        try {
+            console.log(`Deleting blog: ${slug}`);
+            
+            const { error } = await supabase
+                .from('blogs')
+                .delete()
+                .eq('slug', slug);
 
-        if (error) throw error;
+            if (error) {
+                console.error(`Error deleting blog ${slug}:`, error);
+                throw error;
+            }
+            
+            console.log(`Blog deleted successfully: ${slug}`);
+        } catch (error) {
+            console.error(`deleteBlog error for ${slug}:`, error);
+            throw error;
+        }
     }
 
     /**
@@ -147,9 +229,6 @@ export class BlogService {
      * @param {string} title - Blog title to convert
      * @returns {string} URL-friendly slug
      * @private
-     * @example
-     * const slug = BlogService.generateSlug("My Amazing Blog Post!");
-     * // Returns: "my-amazing-blog-post"
      */
     private static generateSlug(title: string): string {
         return title
