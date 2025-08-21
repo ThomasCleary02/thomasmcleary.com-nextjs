@@ -53,37 +53,37 @@ export default function SetupInstructionsModal({ isOpen, onClose, project, showT
 
   // Add this custom component configuration for ReactMarkdown
   const markdownComponents = {
-    h1: ({node, ...props}) => (
+    h1: ({node, ...props}: {node: any, props: any}) => (
       <h1 {...props} className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700" />
     ),
-    h2: ({node, ...props}) => (
+    h2: ({node, ...props}: {node: any, props: any}) => (
       <h2 {...props} className="text-xl font-bold text-gray-900 dark:text-white mt-6 mb-3" />
     ),
-    h3: ({node, ...props}) => (
+    h3: ({node, ...props}: {node: any, props: any}) => (
       <h3 {...props} className="text-lg font-semibold text-gray-900 dark:text-white mt-5 mb-2" />
     ),
-    h4: ({node, ...props}) => (
+    h4: ({node, ...props}: {node: any, props: any}) => (
       <h4 {...props} className="text-base font-semibold text-gray-900 dark:text-white mt-4 mb-2" />
     ),
-    p: ({node, ...props}) => (
+    p: ({node, ...props}: {node: any, props: any}) => (
       <p {...props} className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed" />
     ),
-    ul: ({node, ...props}) => (
+    ul: ({node, ...props}: {node: any, props: any}) => (
       <ul {...props} className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2 ml-4" />
     ),
-    ol: ({node, ...props}) => (
+    ol: ({node, ...props}: {node: any, props: any}) => (
       <ol {...props} className="list-decimal list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2 ml-4" />
     ),
-    li: ({node, ...props}) => (
+    li: ({node, ...props}: {node: any, props: any}) => (
       <li {...props} className="text-gray-700 dark:text-gray-300" />
     ),
-    strong: ({node, ...props}) => (
+    strong: ({node, ...props}: {node: any, props: any}) => (
       <strong {...props} className="font-bold text-gray-900 dark:text-white" />
     ),
-    em: ({node, ...props}) => (
+    em: ({node, ...props}: {node: any, props: any}) => (
       <em {...props} className="italic text-gray-700 dark:text-gray-300" />
     ),
-    code: ({node, inline, className, children, ...props}) => {
+    code: ({node, inline, className, children, ...props}: {node: any, inline: any, className: any, children: any, props: any}) => {
       const match = /language-(\w+)/.exec(className || '');
       return !inline && match ? (
         <div className="my-4">
@@ -108,24 +108,24 @@ export default function SetupInstructionsModal({ isOpen, onClose, project, showT
         </code>
       );
     },
-    blockquote: ({node, ...props}) => (
+    blockquote: ({node, ...props}: {node: any, props: any}) => (
       <blockquote {...props} className="border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 pl-4 py-3 my-4 italic text-gray-700 dark:text-gray-300 rounded-r-lg" />
     ),
-    a: ({node, ...props}) => (
+    a: ({node, ...props}: {node: any, props: any}) => (
       <a {...props} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline" />
     ),
-    hr: ({node, ...props}) => (
+    hr: ({node, ...props}: {node: any, props: any}) => (
       <hr {...props} className="my-6 border-gray-300 dark:border-gray-600" />
     ),
-    table: ({node, ...props}) => (
+    table: ({node, ...props}: {node: any, props: any}) => (
       <div className="overflow-x-auto my-4">
         <table {...props} className="min-w-full border border-gray-300 dark:border-gray-600 rounded-lg" />
       </div>
     ),
-    th: ({node, ...props}) => (
+    th: ({node, ...props}: {node: any, props: any}) => (
       <th {...props} className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-left text-sm font-semibold text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-600" />
     ),
-    td: ({node, ...props}) => (
+    td: ({node, ...props}: {node: any, props: any}) => (
       <td {...props} className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600" />
     )
   };
@@ -250,7 +250,7 @@ export default function SetupInstructionsModal({ isOpen, onClose, project, showT
                       </button>
                     </div>
                     <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
-                      <ReactMarkdown components={markdownComponents}>
+                      <ReactMarkdown components={markdownComponents as any}>
                         {project.setup_instructions || 'No setup instructions available for this project.'}
                       </ReactMarkdown>
                     </div>
