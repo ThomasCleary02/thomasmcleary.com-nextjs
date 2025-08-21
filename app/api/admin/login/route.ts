@@ -5,12 +5,22 @@ import { AuthService } from '@/lib/utils/auth';
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
-    const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
+    
+    // More robust IP detection
+    const clientIP = request.headers.get('cf-connecting-ip') || 
+                     request.headers.get('x-real-ip') || 
+                     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                     'unknown';
 
-    // Check rate limiting
-    if (!AuthService.checkRateLimit(clientIP)) {
+    // Check rate limiting with enhanced response
+    const rateLimitResult = AuthService.checkRateLimit(clientIP);
+    if (!rateLimitResult.allowed) {
+      const lockoutMinutes = Math.ceil((rateLimitResult.lockoutTime! - Date.now()) / 60000);
       return NextResponse.json(
-        { error: 'Too many login attempts. Please try again later.' },
+        { 
+          error: `Account temporarily locked. Try again in ${lockoutMinutes} minutes.`,
+          lockoutTime: rateLimitResult.lockoutTime 
+        },
         { status: 429 }
       );
     }

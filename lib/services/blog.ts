@@ -116,7 +116,7 @@ export class BlogService {
      * @throws {Error} If update fails
      */
     static async updateBlog(slug: string, updates: UpdateBlogRequest): Promise<Blog> {
-        const { data, error } = await supabase
+        const { data, error } = await supabase  // Use regular supabase client
             .from('blogs')
             .update(updates)
             .eq('slug', slug)

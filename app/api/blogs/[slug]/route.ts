@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BlogService } from "@/lib/services/blog";
+import { AuthService } from "@/lib/utils/auth";
 
 export async function GET(
     _request: NextRequest,
-    { params }: { params: { slug: string } }
+    { params }: { params: Promise<{ slug: string }> }
 ) {
-    const { slug } = params;
+    const { slug } = await params;
     try {
         const blog = await BlogService.getBlogBySlug(slug);
         if (!blog) {
@@ -19,12 +20,39 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    // Verify admin authentication
+    const token = request.cookies.get('admin_token')?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const payload = AuthService.verifyToken(token);
+    if (!payload) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+
+    // Use admin client directly instead of setting context
+    const { supabaseAdmin } = await import('@/lib/supabase-server');
+    
+    const { slug } = await params;
     const updates = await request.json();
-    const blog = await BlogService.updateBlog(params.slug, updates);
-    return NextResponse.json(blog);
+    
+    const { data, error } = await supabaseAdmin
+      .from('blogs')
+      .update(updates)
+      .eq('slug', slug)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });

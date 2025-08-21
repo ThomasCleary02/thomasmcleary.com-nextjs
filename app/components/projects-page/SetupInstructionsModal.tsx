@@ -6,6 +6,8 @@ import { X, Code, Copy, Check, Bot, Database, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { Project } from '@/lib/types/project';
 import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface SetupInstructionsModalProps {
   isOpen: boolean;
@@ -47,6 +49,85 @@ export default function SetupInstructionsModal({ isOpen, onClose, project, showT
       case 'api': return 'API Documentation';
       default: return 'Setup Instructions';
     }
+  };
+
+  // Add this custom component configuration for ReactMarkdown
+  const markdownComponents = {
+    h1: ({node, ...props}) => (
+      <h1 {...props} className="text-2xl font-bold text-gray-900 dark:text-white mt-8 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700" />
+    ),
+    h2: ({node, ...props}) => (
+      <h2 {...props} className="text-xl font-bold text-gray-900 dark:text-white mt-6 mb-3" />
+    ),
+    h3: ({node, ...props}) => (
+      <h3 {...props} className="text-lg font-semibold text-gray-900 dark:text-white mt-5 mb-2" />
+    ),
+    h4: ({node, ...props}) => (
+      <h4 {...props} className="text-base font-semibold text-gray-900 dark:text-white mt-4 mb-2" />
+    ),
+    p: ({node, ...props}) => (
+      <p {...props} className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed" />
+    ),
+    ul: ({node, ...props}) => (
+      <ul {...props} className="list-disc list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2 ml-4" />
+    ),
+    ol: ({node, ...props}) => (
+      <ol {...props} className="list-decimal list-inside text-gray-700 dark:text-gray-300 mb-4 space-y-2 ml-4" />
+    ),
+    li: ({node, ...props}) => (
+      <li {...props} className="text-gray-700 dark:text-gray-300" />
+    ),
+    strong: ({node, ...props}) => (
+      <strong {...props} className="font-bold text-gray-900 dark:text-white" />
+    ),
+    em: ({node, ...props}) => (
+      <em {...props} className="italic text-gray-700 dark:text-gray-300" />
+    ),
+    code: ({node, inline, className, children, ...props}) => {
+      const match = /language-(\w+)/.exec(className || '');
+      return !inline && match ? (
+        <div className="my-4">
+          <SyntaxHighlighter
+            style={oneDark}
+            language={match[1]}
+            PreTag="div"
+            className="rounded-lg"
+            customStyle={{
+              margin: 0,
+              borderRadius: '8px',
+              fontSize: '14px',
+              lineHeight: '1.5'
+            }}
+          >
+            {String(children).replace(/\n$/, '')}
+          </SyntaxHighlighter>
+        </div>
+      ) : (
+        <code {...props} className="bg-gray-200 dark:bg-gray-700 text-blue-600 dark:text-blue-400 px-2 py-1 rounded text-sm font-mono">
+          {children}
+        </code>
+      );
+    },
+    blockquote: ({node, ...props}) => (
+      <blockquote {...props} className="border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 pl-4 py-3 my-4 italic text-gray-700 dark:text-gray-300 rounded-r-lg" />
+    ),
+    a: ({node, ...props}) => (
+      <a {...props} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline" />
+    ),
+    hr: ({node, ...props}) => (
+      <hr {...props} className="my-6 border-gray-300 dark:border-gray-600" />
+    ),
+    table: ({node, ...props}) => (
+      <div className="overflow-x-auto my-4">
+        <table {...props} className="min-w-full border border-gray-300 dark:border-gray-600 rounded-lg" />
+      </div>
+    ),
+    th: ({node, ...props}) => (
+      <th {...props} className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-left text-sm font-semibold text-gray-900 dark:text-white border-b border-gray-300 dark:border-gray-600" />
+    ),
+    td: ({node, ...props}) => (
+      <td {...props} className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600" />
+    )
   };
 
   return (
@@ -169,7 +250,7 @@ export default function SetupInstructionsModal({ isOpen, onClose, project, showT
                       </button>
                     </div>
                     <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
-                      <ReactMarkdown>
+                      <ReactMarkdown components={markdownComponents}>
                         {project.setup_instructions || 'No setup instructions available for this project.'}
                       </ReactMarkdown>
                     </div>

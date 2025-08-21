@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
@@ -10,9 +10,16 @@ interface AdminAuthProps {
 
 const AdminAuth = ({ onAuthSuccess }: AdminAuthProps): React.JSX.Element => {
   const [formData, setFormData] = useState({ username: '', password: '' });
+  const [csrfToken, setCsrfToken] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Generate CSRF token on component mount
+    const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    setCsrfToken(token);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -22,9 +29,12 @@ const AdminAuth = ({ onAuthSuccess }: AdminAuthProps): React.JSX.Element => {
     try {
       const response = await fetch('/api/admin/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-        credentials: 'include' // Add this line
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken 
+        },
+        body: JSON.stringify({ ...formData, csrfToken }),
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -67,6 +77,7 @@ const AdminAuth = ({ onAuthSuccess }: AdminAuthProps): React.JSX.Element => {
           className="mt-8 space-y-6" 
           onSubmit={handleSubmit}
         >
+          <input type="hidden" name="csrfToken" value={csrfToken} />
           <div>
             <input
               id="username"
