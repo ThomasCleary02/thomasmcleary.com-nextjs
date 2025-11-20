@@ -35,7 +35,7 @@ export default function ApiDemoModal({ isOpen, onClose, project }: ApiDemoModalP
     
     try {
       const API_KEY = process.env.NEXT_PUBLIC_BOOK_SCRAPER_API_KEY || 'DEMO_KEY';
-      const response = await fetch('https://bookscraperapi-production.up.railway.app/search', {
+      const response = await fetch('https://book-scraper-for-amazon.onrender.com/search', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${API_KEY}`,
@@ -62,7 +62,7 @@ export default function ApiDemoModal({ isOpen, onClose, project }: ApiDemoModalP
   };
 
   const generateCurlCommand = () => {
-    return `curl -X POST "https://bookscraperapi-production.up.railway.app/search" \\\n  -H "Authorization: Bearer DEMO_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '{"keywords": "${searchQuery}", "num_results": ${numResults}}'`;
+    return `curl -X POST "https://book-scraper-for-amazon.onrender.com/search" \\\n  -H "Authorization: Bearer DEMO_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '{"keywords": "${searchQuery}", "num_results": ${numResults}}'`;
   };
 
   return (
@@ -112,10 +112,10 @@ export default function ApiDemoModal({ isOpen, onClose, project }: ApiDemoModalP
                 <h3 className="font-medium text-blue-900 dark:text-blue-100 mb-2">API Endpoint</h3>
                 <div className="flex items-center gap-2">
                   <code className="bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded text-sm font-mono">
-                    https://bookscraperapi-production.up.railway.app
+                    https://book-scraper-for-amazon.onrender.com
                   </code>
                   <a
-                    href="https://bookscraperapi-production.up.railway.app/health"
+                    href="https://book-scraper-for-amazon.onrender.com/health"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
