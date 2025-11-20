@@ -9,7 +9,7 @@ interface AdminAuthProps {
 }
 
 const AdminAuth = ({ onAuthSuccess }: AdminAuthProps): React.JSX.Element => {
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [csrfToken, setCsrfToken] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -80,14 +80,14 @@ const AdminAuth = ({ onAuthSuccess }: AdminAuthProps): React.JSX.Element => {
           <input type="hidden" name="csrfToken" value={csrfToken} />
           <div>
             <input
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               type="text"
               required
               className="appearance-none rounded-xl relative block w-full px-4 py-3 border-0 placeholder-gray-400 text-gray-900 dark:text-white bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:z-10 text-sm transition-all duration-200"
-              placeholder="Username"
-              value={formData.username}
-              onChange={(e) => setFormData({...formData, username: e.target.value})}
+              placeholder="Email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
             />
           </div>
 
