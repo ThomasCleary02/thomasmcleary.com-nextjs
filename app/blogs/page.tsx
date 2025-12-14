@@ -2,6 +2,10 @@ import React from 'react';
 import { BlogService } from '@/lib/services/blog';
 import BlogCard from '@/app/components/blogs-page/BlogCard';
 
+// Allow static generation - cache will be invalidated on-demand via revalidatePath()
+// Pages will be statically generated at build time and work even if Supabase is down
+// Cache is invalidated when blog posts are created/updated via API routes
+
 export default async function BlogsPage() {
   try {
     console.log('🔄 Fetching blogs...');

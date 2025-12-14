@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from 'next/cache';
 import { BlogService } from "@/lib/services/blog";
 import { AuthService } from "@/lib/utils/auth";
 
@@ -50,6 +51,21 @@ export async function PUT(
     if (error) {
       console.error('Supabase error:', error);
       return NextResponse.json({ error: 'Failed to update blog' }, { status: 500 });
+    }
+
+    // Revalidate the blogs list page (always, in case order/visibility changed)
+    revalidatePath('/blogs');
+    
+    // Revalidate the blog post page(s)
+    const oldSlug = slug;
+    const newSlug = data.slug;
+    
+    // Always revalidate the old slug path
+    revalidatePath(`/blogs/${oldSlug}`);
+    
+    // If slug changed, also revalidate the new slug path
+    if (oldSlug !== newSlug) {
+      revalidatePath(`/blogs/${newSlug}`);
     }
 
     return NextResponse.json(data);

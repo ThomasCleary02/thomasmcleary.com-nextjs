@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { BlogService } from '@/lib/services/blog';
 
 /**
@@ -55,6 +56,13 @@ export async function POST(request: NextRequest) {
     }
     
     const blog = await BlogService.createBlog(blogData);
+    
+    // Revalidate the blogs page and the new blog post page if published
+    revalidatePath('/blogs');
+    if (blog.status === 'published' && blog.slug) {
+      revalidatePath(`/blogs/${blog.slug}`);
+    }
+    
     return NextResponse.json(blog);
   } catch {
     return NextResponse.json({ error: 'Failed to create blog' }, { status: 500 });
