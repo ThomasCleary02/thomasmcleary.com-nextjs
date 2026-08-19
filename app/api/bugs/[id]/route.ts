@@ -4,7 +4,7 @@ import { AuthService } from '@/lib/utils/auth';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verify admin authentication
@@ -18,7 +18,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    await BugService.deleteBug(params.id);
+    const { id } = await params;
+    await BugService.deleteBug(id);
     return NextResponse.json({ message: 'Bug report deleted successfully' });
   } catch (error) {
     console.error('API Error:', error);
@@ -28,11 +29,12 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const updates = await request.json();
-    const bug = await BugService.updateBug(params.id, {
+    const bug = await BugService.updateBug(id, {
       status: updates.status,
       admin_notes: updates.admin_notes
     });

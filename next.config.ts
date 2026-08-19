@@ -67,9 +67,6 @@ const nextConfig: NextConfig = {
   // Enable static generation for better SEO
   trailingSlash: false,
   
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
