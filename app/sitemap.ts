@@ -1,8 +1,10 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from 'next';
+import { getAllWriting } from '@/lib/content/writing';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://thomasmcleary.com'
-  
+  const baseUrl = 'https://thomasmcleary.com';
+  const writing = getAllWriting();
+
   return [
     {
       url: baseUrl,
@@ -11,16 +13,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/writing`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/projects`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-  ]
+    ...writing.map((piece) => ({
+      url: `${baseUrl}/writing/${piece.slug}`,
+      lastModified: new Date(piece.date),
+      changeFrequency: 'yearly' as const,
+      priority: 0.6,
+    })),
+  ];
 }

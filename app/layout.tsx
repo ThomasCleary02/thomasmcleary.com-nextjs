@@ -1,109 +1,104 @@
-import type { Metadata, Viewport } from 'next'
-import { Inter, Nunito } from 'next/font/google'
-import './globals.css'
-import Navigation from './components/Navigation'
-import Footer from './components/Footer'
-import { ThemeProvider } from './contexts/ThemeContext'
+import type { Metadata, Viewport } from 'next';
+import { IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google';
+import React from 'react';
+import './globals.css';
+import Navigation from './components/Navigation';
+import Footer from './components/Footer';
+import { ThemeProvider } from './contexts/ThemeContext';
 import StructuredData from './components/StructuredData';
 
-const inter = Inter({ 
+const sans = IBM_Plex_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['400', '500', '600'],
+  variable: '--font-sans',
   display: 'swap',
-})
+});
 
-const nunito = Nunito({ 
+const mono = IBM_Plex_Mono({
   subsets: ['latin'],
-  variable: '--font-nunito',
+  weight: ['400', '500'],
+  variable: '--font-mono',
   display: 'swap',
-})
+});
+
+const description =
+  'Thomas Cleary is a software engineer at Orases in Frederick, Maryland.';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Thomas Cleary - Software Engineer',
-    template: '%s | Thomas Cleary'
+    default: 'Thomas Cleary',
+    template: '%s · Thomas Cleary',
   },
-  description: 'Full-stack software engineer specializing in web development, mobile applications, and innovative solutions. View my portfolio of projects and get in touch.',
-  keywords: ['software engineer', 'full-stack developer', 'web development', 'React', 'Python', 'portfolio', 'Thomas Cleary'],
-  authors: [{ name: 'Thomas Cleary' }],
+  description,
+  keywords: [
+    'Thomas Cleary',
+    'software engineer',
+    'Orases',
+    'Frederick Maryland',
+  ],
+  authors: [{ name: 'Thomas Cleary', url: 'https://thomasmcleary.com' }],
   creator: 'Thomas Cleary',
   publisher: 'Thomas Cleary',
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
   },
   metadataBase: new URL('https://thomasmcleary.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Thomas Cleary - Software Engineer',
-    description: 'Full-stack software engineer specializing in web development, mobile applications, and innovative solutions.',
+    title: 'Thomas Cleary',
+    description,
     url: 'https://thomasmcleary.com',
-    siteName: 'Thomas Cleary Portfolio',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Thomas Cleary - Software Engineer',
-      },
-    ],
+    siteName: 'Thomas Cleary',
     locale: 'en_US',
-    type: 'website',
+    type: 'profile',
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Thomas Cleary - Software Engineer',
-    description: 'Full-stack software engineer specializing in web development, mobile applications, and innovative solutions.',
-    images: ['/og-image.png'],
-    creator: '@yourtwitterhandle', // Add if you have one
+    card: 'summary',
+    title: 'Thomas Cleary',
+    description,
   },
-  verification: {
-    google: 'your-google-verification-code', // Add Google Search Console verification
-    // yandex: 'your-yandex-verification-code',
-    // yahoo: 'your-yahoo-verification-code',
-  },
-  category: 'technology',
-  classification: 'portfolio',
-}
+};
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0348A5',
-}
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f5f6f8' },
+    { media: '(prefers-color-scheme: dark)', color: '#0d1117' },
+  ],
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }): React.JSX.Element {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <StructuredData />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})();`,
+          }}
+        />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} font-body`}>
+      <body className="min-h-screen font-sans antialiased">
         <ThemeProvider>
-          <Navigation />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <div className="site-shell flex min-h-screen flex-col">
+            <Navigation />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

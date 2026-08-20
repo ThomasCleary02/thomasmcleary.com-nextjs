@@ -1,27 +1,32 @@
-export default function StructuredData() {
+import React from 'react';
+
+export default function StructuredData(): React.JSX.Element {
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Thomas Cleary",
-    "jobTitle": "Software Engineer",
-    "description": "Full-stack software engineer specializing in web development, mobile applications, and innovative solutions.",
-    "url": "https://thomasmcleary.com",
-    "sameAs": [
-      "https://github.com/ThomasCleary02",
-      "https://www.linkedin.com/in/t-cleary/",
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Thomas Cleary',
+    jobTitle: 'Software Engineer',
+    description: 'Software engineer at Orases in Frederick, Maryland.',
+    url: 'https://thomasmcleary.com',
+    sameAs: [
+      'https://github.com/ThomasCleary02',
+      'https://www.linkedin.com/in/t-cleary/',
     ],
-    "knowsAbout": [
-      "Web Development",
-      "Mobile Applications",
-      "Full-Stack Development",
-      "React",
-      "Python",
-      "Software Engineering"
-    ],
-    "worksFor": {
-      "@type": "Organization",
-      "name": "Self-Employed"
-    }
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Orases',
+      url: 'https://orases.com',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Frederick',
+        addressRegion: 'MD',
+        addressCountry: 'US',
+      },
+    },
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'Shepherd University',
+    },
   };
 
   return (

@@ -1,32 +1,20 @@
 'use client';
 
-import { useTheme } from '../contexts/ThemeContext';
-import { Sun, Moon } from 'lucide-react';
-import { motion } from 'framer-motion';
 import React from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function ThemeToggle(): React.JSX.Element {
   const { theme, toggleTheme } = useTheme();
+  const nextTheme = theme === 'light' ? 'dark' : 'light';
 
   return (
-    <motion.button
+    <button
+      type="button"
       onClick={toggleTheme}
-      className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      className="transition-colors hover:text-ink"
+      aria-label={`Switch to ${nextTheme} mode`}
     >
-      <motion.div
-        initial={false}
-        animate={{ rotate: theme === 'dark' ? 180 : 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {theme === 'light' ? (
-          <Moon size={20} className="text-gray-700" />
-        ) : (
-          <Sun size={20} className="text-gray-300" />
-        )}
-      </motion.div>
-    </motion.button>
+      {theme === 'light' ? 'dark' : 'light'}
+    </button>
   );
 }

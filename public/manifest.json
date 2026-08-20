@@ -1,21 +1,9 @@
 {
-  "name": "Thomas Cleary - Software Engineer",
+  "name": "Thomas Cleary",
   "short_name": "Thomas Cleary",
-  "description": "Full-stack software engineer portfolio",
+  "description": "Software engineer at Orases in Frederick, Maryland.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0348A5",
-  "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "background_color": "#f5f6f8",
+  "theme_color": "#0f1419"
 }
